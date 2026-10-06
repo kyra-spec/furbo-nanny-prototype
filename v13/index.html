@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#FFFEFB" id="theme-color" />
+<title>B_Homepage redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&display=swap" rel="stylesheet">
+<style>
+/* ── Furbo Design System Tokens ── */
+:root {
+  --color-yellow-100: #F7CD3D;
+  --color-yellow-40:  #FCEBB1;
+  --color-yellow-20:  #FDF5D8;
+  --color-black-100: #434343;
+  --color-black-70:  #7C7C7C;
+  --color-black-50:  #A1A1A1;
+  --color-black-40:  #B4B4B4;
+  --color-black-30:  #C6C6C6;
+  --color-black-10:  #ECECEC;
+  --color-black-5:   #F5F5F5;
+  --color-white-100: #FFFFFF;
+  --color-indigo-100: #5170D7;
+  --color-bg-cream-100: #FBF9F5;
+  --font-family-base: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --sb: 54px;
+  --tb: 80px;
+  --cb: 34px;
+  --font-sf: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; touch-action: pan-x pan-y; }
+body { background: #e9e7e2; font-family: var(--font-family-base); color: var(--color-black-100);
+  -webkit-font-smoothing: antialiased; font-variation-settings: "opsz" 14;
+  display: flex; align-items: center; justify-content: center; min-height: 100%; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; padding: 0; color: inherit; }
+img { display: block; }
+#root { width: 390px; height: 844px; flex: none; transform-origin: center center; }
+.screen { width: 390px; height: 844px; background: var(--color-bg-cream-100);
+  border-radius: 44px; overflow: hidden; position: relative;
+  box-shadow: 0 40px 90px rgba(0,0,0,0.22), 0 0 0 1px rgba(0,0,0,0.06); }
+.screen::after { content: ''; position: absolute; bottom: 8px; left: 50%;
+  transform: translateX(-50%); width: 134px; height: 5px; border-radius: 100px;
+  background: rgba(0,0,0,0.28); z-index: 70; pointer-events: none; }
+.screen.kb-open::after { display: none; }
+@media (max-width: 480px) {
+  body { background: var(--color-white-100); }
+  #root { width: 100% !important; height: 100dvh !important; transform: none !important; }
+  .screen { width: 100% !important; height: 100% !important; border-radius: 0 !important; box-shadow: none !important; }
+  :root { --sb: env(safe-area-inset-top, 0px); --tb: calc(53px + env(safe-area-inset-bottom, 0px)); --cb: calc(12px + env(safe-area-inset-bottom, 0px)); }
+  .tabbar { padding-top: 4px; }
+  .statusbar { display: none; }
+  /* The phone's own status bar sits above the page: give it the page's top color, and blend the
+     page's top edge into that same color so there is no visible cut above the logo / chat title. */
+  html, body { background: #FFFEFB; transition: background-color .3s ease; }
+  html.nanny-open, html.nanny-open body { background: #F4EFF6; }
+  html.explore-open, html.explore-open body { background: #F8F4FE; }
+  .explore-page { margin-top: calc(var(--sb) - 13.85vw); }
+  .home::before, .expand::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 28px; z-index: 1; pointer-events: none; }
+  .home::before { background: linear-gradient(#FFFEFB, rgba(255,254,251,0)); }
+  .expand::before { background: linear-gradient(#F4EFF6, rgba(244,239,246,0)); }
+  .screen::after, .kb-home { display: none; }
+}
+
+/* ── Status bar (shared) ── */
+.statusbar { position: absolute; top: 0; left: 0; right: 0; height: 54px; z-index: 90; pointer-events: none; }
+.sb-time { position: absolute; left: 0; width: 140.5px; top: 18px; text-align: center;
+  font-family: var(--font-sf); font-weight: 600; font-size: 17px; line-height: 22px; color: #000; }
+.sb-levels { position: absolute; right: 0; top: 0; width: 140.5px; height: 54px; }
+
+/* ── Home ── */
+.home { position: absolute; inset: 0; overflow: hidden; background: #fff; }
+.home-bg { position: absolute; left: 0; top: 0; width: 390px; height: 760px; overflow: hidden; pointer-events: none; opacity: .3; }
+.home-bg img { position: absolute; left: -191px; top: -243px; width: 491px; height: 471px; max-width: none; }
+
+.topbar { position: absolute; top: var(--sb); left: 0; right: 0; height: 44px; z-index: 5; }
+.topbar-logo { position: absolute; left: 20px; top: -2px; width: 66px; height: 48px; }
+.topbar-right { position: absolute; right: 8px; top: 0; display: flex; align-items: center; }
+.pet-slot { padding: 4px; }
+.pet-avatar { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; }
+.pet-avatar img { width: 36px; height: 36px; }
+.pet-add { width: 36px; height: 36px; border-radius: 18px; background: var(--color-black-30); position: relative; }
+.pet-add .paw-a { position: absolute; left: 6px; top: 8px; width: 21.73px; height: 18.913px; }
+.pet-add .paw-b { position: absolute; left: 19.59px; top: 18.39px; width: 9.993px; height: 9.993px; }
+
+/* Live view: 228px visible above the sheet; the photo runs 251px tall underneath the sheet's rounded corners */
+.live { position: absolute; top: calc(var(--sb) + 44px); left: 0; right: 0; height: 251px; overflow: hidden; background: #151515; touch-action: pan-y; }
+.live-track { display: flex; height: 100%; transition: transform .32s cubic-bezier(.22,.9,.36,1); }
+.live-track.dragging { transition: none; }
+.live-slide { flex: 0 0 100%; width: 100%; height: 100%; position: relative; overflow: hidden; }
+.live-slide img, .live-slide video { position: absolute; max-width: none; transition: filter .25s ease; }
+.live-slide.fig video { width: 100%; height: 100%; left: 0; top: 0; object-fit: cover; }
+.live-slide.fig img { width: 123.54%; height: 105.53%; left: -7.97%; top: -8.72%; }
+.live-slide.fill img { width: 100%; height: 100%; left: 0; top: 0; object-fit: cover; }
+.live-slide::after { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.6) 1.349%, rgba(0,0,0,0) 24.276%); }
+.live.off .live-slide img, .live.off .live-slide video { filter: brightness(0.25) saturate(0.6); }
+.live-off { position: absolute; left: 0; right: 0; top: 0; height: 228px; z-index: 3; display: none;
+  flex-direction: column; align-items: center; justify-content: center; gap: 8px; pointer-events: none; }
+.live.off .live-off { display: flex; }
+.live-off span { font-size: 13px; color: rgba(255,255,255,0.85); }
+.live-slide.disc { background: #1a1a1a; }
+.live-slide.disc img { width: 100%; height: 228px; left: 0; top: 0; object-fit: cover; }
+.live-slide.disc::after { display: none; }
+/* A disconnected camera shows its last frame + "Disconnected"; the power and sound controls are hidden */
+.live.disc .live-status, .live.disc #power-btn, .live.disc #sound-btn { opacity: 0; pointer-events: none; }
+.live-status, #power-btn, #sound-btn { transition: opacity .2s ease; }
+.live-status { position: absolute; left: 16px; top: 12px; z-index: 4; display: flex; gap: 6px; align-items: center; pointer-events: none; }
+.live-status span { font-size: 14px; line-height: 20px; color: #fff; }
+.live-status img { width: 16px; height: 12px; }
+.live-btn { position: absolute; z-index: 4; width: 36px; height: 36px; right: 16px; }
+.live-btn img { width: 100%; height: 100%; }
+.live-btn:active img { opacity: .65; }
+#power-btn { top: 12px; }
+#sound-btn { top: 180px; }
+#sound-btn img { position: absolute; left: 4px; top: 4px; width: 28px; height: 28px; }
+#sound-btn.on img { opacity: .55; }
+
+/* Camera pill (glass): shows the current camera; tapping opens the dropdown menu (one camera at a time) */
+.cam-pill { position: absolute; left: 16px; top: 180px; z-index: 4; height: 32px; min-width: 138px; max-width: 220px;
+  border-radius: 225px; background: rgba(24,24,24,0.36); display: flex; align-items: center; gap: 6px; padding: 0 10px 0 13px; color: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.12), inset 0 0 0 0.5px rgba(255,255,255,0.22);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3); backdrop-filter: blur(16px) saturate(1.3); }
+.cam-pill:active { background: rgba(24,24,24,0.5); }
+.cam-pill .dot, .cam-menu .dot { width: 8px; height: 8px; border-radius: 50%; background: #38EE28; flex: none; }
+.cam-pill .dot.offline, .cam-menu .dot.offline { background: #F3454E; }
+.cam-pill .cam-name { flex: 1; min-width: 0; text-align: left; font-size: 14px; font-weight: 600; line-height: 18px; letter-spacing: -0.2px; color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.15); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cam-pill svg { flex: none; transition: transform .25s ease; }
+.cam-pill.open svg { transform: rotate(180deg); }
+.cam-scrim { position: absolute; inset: 0; z-index: 11; display: none; }
+.cam-scrim.open { display: block; }
+.cam-menu { position: absolute; left: 14px; top: calc(var(--sb) + 221px); z-index: 12; width: 224px; padding: 10px 0;
+  border-radius: 32px; background: rgba(250,250,250,0.82); -webkit-backdrop-filter: blur(24px) saturate(1.4); backdrop-filter: blur(24px) saturate(1.4);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.14), inset 0 0 0 1px rgba(255,255,255,0.7);
+  transform-origin: 20% 0; transform: scale(.85); opacity: 0; visibility: hidden;
+  transition: transform .22s cubic-bezier(.22,.9,.36,1), opacity .18s ease, visibility 0s linear .22s; }
+.cam-menu.open { transform: scale(1); opacity: 1; visibility: visible; transition: transform .22s cubic-bezier(.22,.9,.36,1), opacity .18s ease, visibility 0s; }
+.cam-row { width: 100%; height: 42px; display: flex; align-items: center; padding: 0 16px 0 26px; font-family: var(--font-sf);
+  font-size: 17px; line-height: 22px; letter-spacing: -0.4px; color: #000; text-align: left; }
+.cam-row:active { background: rgba(0,0,0,0.05); }
+.cam-row .chk { width: 20px; flex: none; margin-right: 12px; display: flex; }
+.cam-row .dot { margin-right: 4px; }
+.cam-row.add { color: #7C7C7C; }
+.cam-row.add .plus { width: 8px; margin-right: 4px; display: flex; justify-content: center; font-size: 17px; }
+.cam-sep { height: 1px; margin: 4px 16px; background: rgba(0,0,0,0.08); }
+
+/* Bottom sheet */
+.sheet { position: absolute; left: 0; right: 0; top: calc(var(--sb) + 272px); bottom: 0; z-index: 6;
+  background: radial-gradient(75% 260px at 0% 160px, #F4E5FC 0%, rgba(244,229,252,0) 100%),
+    radial-gradient(85% 240px at 100% 0%, #E2F0FE 0%, rgba(226,240,254,0) 100%),
+    linear-gradient(#F7F6FE 0px, #F9F8FB 150px, #FDF8E7 300px, #FCF9EF 400px);
+  border-radius: 20px 20px 0 0; box-shadow: 0 -4px 10px rgba(0,0,0,0.15); overflow: hidden; }
+.sheet-handle { position: absolute; left: 0; right: 0; top: 0; height: 32px; z-index: 3; touch-action: none; cursor: grab; }
+.sheet-handle::before { content: ''; position: absolute; left: calc(50% - 16px); top: 10px; width: 36px; height: 4px;
+  border-radius: 50px; background: var(--color-black-100); opacity: .2; }
+
+.chat-home { position: absolute; left: 16px; right: 16px; top: calc(var(--sb) + 304px); bottom: calc(var(--tb) - 1px); z-index: 7;
+  overflow-x: hidden; overflow-y: auto; padding-bottom: 120px; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+.chat-home::-webkit-scrollbar, .chat-expand::-webkit-scrollbar, .chips::-webkit-scrollbar { display: none; }
+
+/* Nanny button: an "Ask me anything" bar while the chat is scrolled to the top,
+   shrinking into a ball in the bottom-right corner once the chat is scrolled down. */
+.fab { position: absolute; z-index: 9; right: calc(50% - 99.5px); bottom: calc(var(--tb) + 20px); width: 199px; height: 44px;
+  border-radius: 30px; background: rgba(255,255,255,0.94);
+  box-shadow: 0 -2px 9px rgba(170,150,240,0.55), 0 3px 10px rgba(110,160,240,0.6), 0 0 0 1px rgba(200,190,245,0.55);
+  transition: right .38s cubic-bezier(.3,1.2,.4,1), width .38s cubic-bezier(.3,1.2,.4,1), height .38s cubic-bezier(.3,1.2,.4,1),
+    bottom .38s cubic-bezier(.3,1.2,.4,1), border-radius .38s ease, box-shadow .3s ease; }
+.fab:active { transform: scale(.97); }
+.fab .face { position: absolute; left: 13px; top: 7px; width: 30px; height: 30px; border-radius: 50%; overflow: hidden;
+  transition: left .38s cubic-bezier(.3,1.2,.4,1), top .38s cubic-bezier(.3,1.2,.4,1), width .38s cubic-bezier(.3,1.2,.4,1), height .38s cubic-bezier(.3,1.2,.4,1); }
+.fab .face img { position: absolute; left: -11%; top: -11%; width: 122%; height: 122%; max-width: none; }
+.fab .label { position: absolute; left: 53px; top: 0; height: 44px; display: flex; align-items: center; white-space: nowrap;
+  font-size: 15px; font-weight: 700; letter-spacing: -0.1px;
+  background: linear-gradient(90deg, #8E7BEA, #5D8CE2); -webkit-background-clip: text; background-clip: text; color: transparent;
+  transition: opacity .2s ease; }
+.fab.mini { right: 16px; bottom: calc(var(--tb) + 14px); width: 58px; height: 58px; border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.8), 0 0 14px rgba(120,150,245,0.7), 0 4px 10px rgba(90,140,235,0.45); }
+.fab.mini .face { left: 0; top: 0; width: 58px; height: 58px; }
+.fab.mini .label { opacity: 0; pointer-events: none; }
+.fab.float { animation: nannyFloat 3s ease-in-out infinite; }
+@keyframes nannyFloat { 0%,100% { translate: 0 0; } 50% { translate: 0 -5px; } }
+/* Soft blurred fade where the chat runs into the tab bar / bottom edge */
+.chat-fade { position: absolute; left: 0; right: 0; height: 50px; bottom: calc(var(--tb) - 1px); z-index: 8; pointer-events: none;
+  -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
+  -webkit-mask-image: linear-gradient(transparent, #000 70%); mask-image: linear-gradient(transparent, #000 70%);
+  background: linear-gradient(rgba(254,250,240,0), rgba(254,250,240,0.85)); }
+
+/* Tab bar (icons only) */
+.tabbar { position: absolute; left: 0; right: 0; bottom: 0; height: var(--tb); z-index: 10; display: flex; align-items: flex-start;
+  justify-content: space-around; padding: 2px 8px 0; border-top: 1px solid var(--color-black-10); background: var(--color-white-100); }
+.tab { width: 64px; display: flex; flex-direction: column; align-items: center; color: var(--color-black-40); }
+.tab-ic { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
+.tab.on { color: var(--color-yellow-100); }
+.tab.disabled { pointer-events: none; }
+
+/* ── Chat messages (shared) ── */
+.msgs { display: flex; flex-direction: column; gap: 12px; }
+.grp { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.bubble-wrap { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; width: 100%; }
+.bubble { background: #fff; padding: 12px; border-radius: 16px 16px 16px 4px; font-size: 14px; line-height: 20px; color: var(--color-black-100); white-space: pre-line; width: 100%; }
+.bubble-wrap.user { align-items: flex-end; }
+.bubble-list { margin: 0; padding-left: 20px; white-space: normal; }
+.bubble-list li { margin: 2px 0; }
+.bubble-wrap.user .bubble { width: auto; max-width: 290px; background: var(--color-yellow-40); border-radius: 16px 16px 4px 16px; }
+.time { font-size: 10px; line-height: 13px; color: var(--color-black-70); }
+.clip { width: 100%; display: flex; flex-direction: column; }
+.clip-top { background: #fff; padding: 8.875px 17.75px; border-radius: 13.313px 13.313px 0 0; }
+.clip-title { font-size: 15px; line-height: 22px; font-weight: 700; color: var(--color-black-100); }
+.clip-media { position: relative; height: 199.688px; border-radius: 0 0 13.313px 13.313px; overflow: hidden; background: #e8e4dc; }
+.clip-media img, .clip-media video { width: 100%; height: 100%; object-fit: cover; }
+.clip-media video[data-zoom] { transform-origin: 0 0; will-change: transform; }
+.clip-ended { position: absolute; inset: 0; background: rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; }
+.clip-media.ended .clip-ended { display: flex; }
+.clip-ended img { width: 36px; height: 36px; }
+.clip-fav { position: absolute; z-index: 2; left: 88.75%; top: 80%; width: 26.85px; height: 26.625px; }
+.clip-fav img { width: 26.85px; height: 26.625px; }
+.clip-fav:active { transform: scale(.9); }
+.feedback { display: flex; align-items: center; gap: 8px; }
+.feedback-label { font-size: 12px; line-height: 16px; color: var(--color-black-100); white-space: nowrap; }
+.fb-btns { display: flex; }
+.fb-btn { width: 64px; height: 42px; position: relative; }
+.fb-btn::before { content: ''; position: absolute; left: 4px; right: 4px; top: 6px; bottom: 6px; border-radius: 20px;
+  background: #fff; border: 1px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: background .15s ease, border-color .15s ease; }
+.fb-btn.on::before { background: #FDF0C4; border-color: var(--color-yellow-100); }
+.fb-btn img { position: absolute; left: 34.38%; right: 34.23%; top: 28.57%; bottom: 27.95%; width: 31.39%; height: 43.48%; }
+.divider { width: 100%; display: flex; align-items: center; gap: 8px; border-radius: 8px; }
+.divider .line { flex: 1; height: 1px; position: relative; }
+.divider .line img { position: absolute; left: 0; right: 0; top: -1px; width: 100%; height: 1px; }
+.divider-btn { height: 24px; min-width: 60px; padding: 0 12px 0 8px; border-radius: 24px; background: rgba(81,112,215,0.15);
+  display: flex; align-items: center; justify-content: center; gap: 4px; }
+.divider-btn img { width: 16px; height: 16px; }
+.divider-btn span { font-size: 12px; line-height: 16px; font-weight: 700; color: var(--color-black-100); }
+.typing { display: flex; gap: 4px; padding: 16px 14px; background: #fff; border-radius: 16px 16px 16px 4px; }
+.typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--color-black-30); animation: typing 1s infinite ease-in-out; }
+.typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes typing { 0%,60%,100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-3px); opacity: 1; } }
+
+/* ── Nanny Features page: full-screen sheet that slides up over the chat ── */
+.explore { position: absolute; inset: 0; z-index: 40; background: #FAF8FD; overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch; overscroll-behavior: contain; visibility: hidden;
+  transform: translate3d(0, 100%, 0); transition: transform .34s cubic-bezier(.22,.9,.36,1), visibility 0s linear .34s; }
+.explore.open { transform: translate3d(0, 0, 0); visibility: visible; transition: transform .34s cubic-bezier(.22,.9,.36,1), visibility 0s linear 0s; }
+.explore::-webkit-scrollbar { display: none; }
+.explore-page { position: relative; width: 100%; }
+.explore-page img { width: 100%; height: auto; display: block; }
+/* the ✕ drawn in the image sits at 92.8% / 9.18% of the page */
+.explore-close { position: absolute; left: calc(92.8% - 22px); top: calc(9.18% - 22px); width: 44px; height: 44px; border-radius: 50%; }
+.explore-close:active { background: rgba(67,67,67,0.08); }
+
+/* ── Nanny Chat (expanded) ── */
+.expand { position: absolute; left: 0; right: 0; bottom: 0; top: 0; z-index: 30; background: #FAF9F5;
+  display: flex; flex-direction: column; overflow: hidden; visibility: hidden; border-radius: 20px 20px 0 0;
+  transform: translate3d(0, calc(var(--sb) + 272px), 0); will-change: transform;
+  transition: transform .34s cubic-bezier(.22,.9,.36,1), border-radius .34s ease, visibility 0s linear .34s; }
+.expand.dragging { transition: none; visibility: visible; }
+.expand.open { transform: translate3d(0, 0, 0); border-radius: 0; visibility: visible; transition: transform .34s cubic-bezier(.22,.9,.36,1), border-radius .34s ease, visibility 0s linear 0s; }
+.expand-bg { position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(80% 300px at 0% 40px, #F3E3F9 0%, rgba(243,227,249,0) 100%),
+    radial-gradient(85% 260px at 100% 0%, #E2EEF8 0%, rgba(226,238,248,0) 100%),
+    linear-gradient(#F4F2F6 0px, #FAF9F5 300px); }
+.expand-top { position: relative; z-index: 2; flex: none; height: calc(var(--sb) + 48px); padding-top: var(--sb); touch-action: none; }
+.expand-close { position: absolute; left: 6px; top: calc(var(--sb) + 1px); width: 44px; height: 44px; padding: 10px; }
+.expand-close img { width: 24px; height: 24px; }
+.expand-title { position: absolute; left: 0; right: 0; top: calc(var(--sb) + 1px); height: 44px; display: flex; align-items: center; justify-content: center;
+  font-size: 18px; line-height: 26px; font-weight: 500; color: var(--color-black-100); pointer-events: none; }
+.chat-expand { position: relative; z-index: 1; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden;
+  padding: 0 16px calc(76px + var(--cb)); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+.screen.kb-open .chat-expand { padding-bottom: 430px; }
+
+/* Bottom dock of Nanny Chat: the Nanny bar/ball while browsing, the quick prompts + text field + keyboard while typing */
+.dock { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; pointer-events: none; }
+.dock > * { pointer-events: auto; }
+.expand .chat-fade { bottom: 0; height: 104px; z-index: 2; background: linear-gradient(rgba(250,249,245,0), rgba(250,249,245,0.9)); }
+.screen.kb-open .expand .chat-fade { opacity: 0; }
+.expand .chat-fade { transition: opacity .2s ease; }
+.compose { position: relative; }
+.compose::before { content: ''; position: absolute; left: 0; right: 0; top: -28px; bottom: 0; pointer-events: none;
+  background: linear-gradient(rgba(250,249,245,0), #FAF9F5 28px); }
+.compose > * { position: relative; }
+.compose .chips { display: none; }
+.screen.kb-open .compose .chips { display: flex; animation: chipsIn .26s cubic-bezier(.22,.9,.36,1); }
+@keyframes chipsIn { from { opacity: 0; transform: translateY(12px); } }
+/* Quick prompts: a marquee that keeps scrolling left; touching it pauses so it can be swiped by hand */
+.chips { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-left: 16px; margin-bottom: 12px;
+  display: flex; cursor: grab; }
+.chip-set { display: flex; gap: 8px; padding-right: 8px; flex: none; }
+.chip { flex: none; height: 34px; background: rgba(67,67,67,0.08); border-radius: 17px; padding: 0 12px 0 10px; display: flex; align-items: center; gap: 4px; }
+.chip:active { background: rgba(67,67,67,0.14); }
+.chip-emoji { font-size: 16px; line-height: 20px; flex: none; width: 20px; text-align: center; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; }
+.chip span { font-size: 14px; line-height: 15px; font-weight: 500; color: var(--color-black-100); white-space: nowrap; }
+.input-card { margin: 0 16px calc(var(--cb) + 4px); height: 48px; transition: margin-bottom .28s cubic-bezier(.22,.9,.36,1); border-radius: 24px; background: #fff; display: flex; align-items: center; gap: 8px; padding: 0 6px 0 12px;
+  box-shadow: 0 -2px 8px rgba(185,165,240,0.45), 0 3px 9px rgba(140,175,235,0.5), 0 0 0 1px rgba(205,195,245,0.6); }
+.screen.kb-open .input-card { margin-bottom: 16px; }
+.input-card .attach { width: 24px; height: 24px; flex: none; }
+.input-card .attach img { width: 24px; height: 24px; }
+.chat-input { flex: 1; min-width: 0; border: none; outline: none; background: none; font-family: inherit; font-size: 16px; line-height: 20px;
+  color: var(--color-black-100); caret-color: var(--color-indigo-100); padding: 0; font-variation-settings: "opsz" 14; }
+.chat-input::placeholder { color: #A1A1A1; }
+.send-btn { width: 36px; height: 36px; flex: none; color: var(--color-yellow-100); display: none; }
+.send-btn svg { width: 36px; height: 36px; display: block; }
+.input-card.has-text .send-btn { display: block; }
+
+/* iOS keyboard (simulated) */
+.kb { height: 0; overflow: hidden; transition: height .28s cubic-bezier(.22,.9,.36,1); background: #D1D4DA; border-radius: 14px 14px 0 0; }
+.screen.kb-open .kb { height: 291px; }
+.kb-inner { height: 291px; padding-top: 8px; position: relative; }
+.kb-layout { position: relative; height: 204px; }
+.kb-row { position: absolute; display: flex; gap: 6px; height: 42px; }
+.kb-row.r1 { top: 0; left: 0.76%; right: 0.76%; }
+.kb-row.r2 { top: 54px; left: 5.85%; right: 5.85%; }
+.kb-row.r3 { top: 108px; left: 15.78%; right: 15.78%; }
+.key { flex: 1 0 0; min-width: 0; height: 42px; border-radius: 4.6px; background: #fff; box-shadow: 0 1px 0 rgba(0,0,0,0.35);
+  font-family: var(--font-sf); font-size: 25px; line-height: 28px; color: #000; display: flex; align-items: center; justify-content: center; padding-bottom: 6px; }
+.key:active { background: #E4E6EA; }
+.key.sp { position: absolute; background: #ABB0BA; padding-bottom: 0; }
+.key.sp:active { background: #fff; }
+.key.txt { font-size: 16px; line-height: 21px; letter-spacing: -0.31px; padding-bottom: 0; }
+#kb-shift { top: 108px; left: 0.76%; width: 11.2%; }
+#kb-shift.on { background: #fff; }
+#kb-del { top: 108px; right: 0.76%; width: 11.2%; }
+#kb-abc { top: 162px; left: 0.76%; width: 23.41%; }
+#kb-space { position: absolute; top: 162px; left: 25.7%; right: 25.7%; }
+#kb-return { top: 162px; left: 75.83%; right: 0.76%; }
+.kb-tray { height: 58px; padding: 25px 20px 0; display: flex; justify-content: space-between; align-items: flex-start; }
+.kb-tray img { width: 26.92px; height: 26.92px; }
+.kb-home { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); width: 139px; height: 5px; border-radius: 100px; background: #000; }
+</style>
+</head>
+<body>
+<div id="root">
+  <div class="screen" id="screen">
+
+    <div class="statusbar">
+      <div class="sb-time">9:41</div>
+      <img class="sb-levels" src="assets/levels.svg" alt="">
+    </div>
+
+    <!-- ─── Home ─── -->
+    <div class="home" id="home">
+      <div class="home-bg"><img src="assets/home_gradient.svg" alt=""></div>
+
+      <div class="topbar">
+        <img class="topbar-logo" src="assets/furbo_logo.svg" alt="Furbo">
+        <div class="topbar-right">
+          <div class="pet-slot"><div class="pet-avatar"><img src="assets/pet_avatar.png" alt="Archie"></div></div>
+          <div class="pet-slot"><div class="pet-add"><img class="paw-a" src="assets/paw_a.svg" alt=""><img class="paw-b" src="assets/paw_b.svg" alt=""></div></div>
+        </div>
+      </div>
+
+      <div class="live" id="live">
+        <div class="live-track" id="live-track">
+          <div class="live-slide fig"><video id="live-video" muted loop autoplay playsinline webkit-playsinline preload="auto"></video></div>
+          <div class="live-slide fill"><img src="assets/cam_kitchen.jpg" alt="Kitchen" draggable="false"></div>
+          <div class="live-slide disc"><img src="assets/cam_disconnected.jpg" alt="Bedroom: disconnected" draggable="false"></div>
+          <div class="live-slide disc"><img src="assets/cam_disconnected.jpg" alt="Hallway: disconnected" draggable="false"></div>
+          <div class="live-slide fill"><img src="assets/cam_bedroom2.jpg" alt="Bedroom2" draggable="false"></div>
+        </div>
+        <div class="live-off">
+          <img src="assets/power.svg" style="width:30px;height:30px;opacity:.9" alt="">
+          <span>Camera is off</span>
+        </div>
+        <div class="live-status"><span>Live</span><img src="assets/home_icon.svg" alt=""></div>
+        <button class="live-btn" id="power-btn" aria-label="Power"><img src="assets/power.svg" alt=""></button>
+        <button class="live-btn" id="sound-btn" aria-label="Sound"><img src="assets/sound_off.svg" alt=""></button>
+        <button class="cam-pill" id="cam-pill" aria-haspopup="menu" aria-expanded="false">
+          <span class="dot" id="cam-dot"></span><span class="cam-name" id="cam-name"></span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3.5 6 8 10.5 12.5 6" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <div class="sheet">
+        <div class="sheet-handle" id="sheet-handle"></div>
+      </div>
+
+      <div class="chat-home" id="chat-home"></div>
+      <div class="chat-fade"></div>
+
+      <button class="fab" id="fab-home" aria-label="Ask Nanny">
+        <span class="face"><img src="assets/nanny_idle.webp" alt=""></span><span class="label">Ask me anything</span>
+      </button>
+
+      <div class="cam-scrim" id="cam-scrim"></div>
+      <div class="cam-menu" id="cam-menu" role="menu"></div>
+
+      <nav class="tabbar" id="tabbar"></nav>
+    </div>
+
+    <!-- ─── Nanny Chat (expanded) ─── -->
+    <div class="expand" id="expand">
+      <div class="expand-bg"></div>
+      <div class="expand-top" id="expand-top">
+        <button class="expand-close" id="expand-close" aria-label="Collapse"><img src="assets/topbar_arrow_down.svg" alt=""></button>
+        <div class="expand-title">Nanny Chat</div>
+      </div>
+      <div class="chat-expand" id="chat-expand"></div>
+      <div class="chat-fade"></div>
+      <div class="dock" id="panel">
+        <div class="compose" id="compose">
+          <div class="chips" id="chips"></div>
+          <div class="input-card" id="input-row">
+            <button class="attach" aria-label="Attach"><img src="assets/attach.svg" alt=""></button>
+            <input class="chat-input" id="chat-input" placeholder="Ask me anything" inputmode="none" autocomplete="off" />
+            <button class="send-btn" id="send-btn" aria-label="Send"><svg viewBox="0 0 36 36" fill="none"><path d="M26.8671 18.7491C27.4844 18.4405 27.4844 17.5595 26.8671 17.2509L11.8813 9.75799C11.196 9.41534 10.4484 10.0966 10.7261 10.8107L13.112 16.9457L18.9777 17.6789C19.1897 17.6789 19.3616 17.8508 19.3616 18.0628C19.3616 18.2748 19.1897 18.4467 18.9777 18.4467L13.0606 19.1863L10.7261 25.1893C10.4484 25.9034 11.196 26.5847 11.8813 26.242L26.8671 18.7491Z" fill="currentColor"/></svg></button>
+          </div>
+        </div>
+        <div class="kb" id="kb"></div>
+      </div>
+    </div>
+
+    <!-- ─── Nanny Features page (opened from "What can Nanny do?") ─── -->
+    <div class="explore" id="explore" aria-hidden="true">
+      <div class="explore-page">
+        <img src="assets/explore_features.jpg" alt="Nanny Features &amp; Pet Care" draggable="false">
+        <button class="explore-close" id="explore-close" aria-label="Close"></button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const NAV_SVGS = {
+  home: `<svg   viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26">
+<g clip-path="url(#clip0_196_475)">
+<path d="M23 10.9659C23 10.3517 22.7353 9.7664 22.2717 9.35554L13.4717 1.55615C12.6351 0.814615 11.3649 0.814616 10.5283 1.55615L1.72828 9.35554C1.26471 9.7664 1 10.3517 1 10.9659V20.8335C1 22.03 1.98497 23 3.2 23H7.05C8.26503 23 9.25 22.03 9.25 20.8335V16.5005C9.25 15.9022 9.74249 15.4173 10.35 15.4173H13.65C14.2575 15.4173 14.75 15.9022 14.75 16.5005V20.8335C14.75 22.03 15.735 23 16.95 23H20.8C22.015 23 23 22.03 23 20.8335V10.9659Z" fill="currentColor"/>
+</g>
+<defs>
+<clipPath id="clip0_196_475">
+<rect width="24" height="24" fill="currentColor"/>
+</clipPath>
+</defs>
+</svg>`,
+  video: `<svg   viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26">
+<g clip-path="url(#clip0_196_478)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7.86311 3C4.4179 3 1.625 5.7646 1.625 9.17492V14.3207C1.625 17.731 4.4179 20.4956 7.86311 20.4956H15.1409C18.5861 20.4956 21.379 17.731 21.379 14.3207V9.17492C21.379 5.76461 18.5861 3 15.1409 3H7.86311ZM14.6211 10.8565C15.3142 11.2527 15.3142 12.243 14.6211 12.6391L10.7222 14.8673C10.0291 15.2634 9.16271 14.7682 9.16271 13.976L9.16271 9.51962C9.16271 8.72738 10.0291 8.23223 10.7222 8.62835L14.6211 10.8565Z" fill="currentColor"/>
+<path d="M8.62385 22.0642C7.81189 22.0642 7.03146 21.9305 6.30379 21.6843C7.58341 22.8626 9.29891 23.5833 11.1845 23.5833H17.328C21.2864 23.5833 24.4954 20.4069 24.4954 16.4885V12.4344C24.4954 10.5656 23.7655 8.86567 22.5725 7.59853C22.8228 8.3207 22.9587 9.09549 22.9587 9.90169V14.9694C22.9587 18.8877 19.7497 22.0642 15.7913 22.0642H8.62385Z" fill="currentColor"/>
+<path d="M21.9343 9.82536V15.0457C21.9346 15.0203 21.9347 14.9949 21.9347 14.9694V9.90169C21.9347 9.87621 21.9346 9.85077 21.9343 9.82536Z" fill="currentColor"/>
+<path d="M15.8685 21.0502H8.54658C8.5723 21.0505 8.59806 21.0507 8.62385 21.0507H15.7913C15.817 21.0507 15.8428 21.0505 15.8685 21.0502Z" fill="currentColor"/>
+</g>
+<defs>
+<clipPath id="clip0_196_478">
+<rect width="26" height="26" fill="currentColor"/>
+</clipPath>
+</defs>
+</svg>`,
+  report: `<svg   viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26">
+<path d="M17.9898 2.23096C17.4365 2.23096 16.988 2.67947 16.988 3.23274C16.988 3.786 17.4365 4.23451 17.9898 4.23451H18.9461C17.1258 6.19129 14.7594 7.63054 12.3118 8.61317C9.24906 9.84275 6.15355 10.3189 4.0388 10.2361C3.48596 10.2144 3.02024 10.645 2.99858 11.1979C2.97693 11.7507 3.40755 12.2164 3.96039 12.2381C6.38704 12.3331 9.76302 11.7954 13.0582 10.4725C15.5341 9.47853 18.0175 8.01967 20.0281 5.99952V6.27439C20.0281 6.82765 20.4766 7.27617 21.0298 7.27617C21.5831 7.27617 22.0316 6.82765 22.0316 6.27439V3.23274C22.0316 2.96705 21.9261 2.71224 21.7382 2.52437C21.5503 2.3365 21.2955 2.23096 21.0298 2.23096H17.9898Z" fill="currentColor"/>
+<path d="M17.4889 11.7479C17.4889 10.6413 18.3859 9.7443 19.4925 9.7443H20.4942C21.6008 9.7443 22.4978 10.6413 22.4978 11.7479V21.7656C22.4978 22.8722 21.6008 23.7692 20.4942 23.7692H19.4925C18.3859 23.7692 17.4889 22.8722 17.4889 21.7656V11.7479Z" fill="currentColor"/>
+<path d="M12.48 12.7496C11.3735 12.7496 10.4765 13.6467 10.4765 14.7532V21.7656C10.4765 22.8722 11.3735 23.7692 12.48 23.7692H13.4818C14.5883 23.7692 15.4854 22.8722 15.4854 21.7656V14.7532C15.4854 13.6467 14.5883 12.7496 13.4818 12.7496H12.48Z" fill="currentColor"/>
+<path d="M5.46757 15.755C4.36103 15.755 3.46401 16.652 3.46401 17.7585V21.7656C3.46401 22.8722 4.36103 23.7692 5.46757 23.7692H6.46934C7.57588 23.7692 8.4729 22.8722 8.4729 21.7656V17.7585C8.4729 16.652 7.57588 15.755 6.46934 15.755H5.46757Z" fill="currentColor"/>
+</svg>`,
+  menu: `<svg   viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26">
+<g clip-path="url(#clip0_196_489)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7.25627 5.03612C7.25627 4.34887 7.82189 3.79175 8.51961 3.79175H22.1637C22.8614 3.79175 23.427 4.34887 23.427 5.03612C23.427 5.72336 22.8614 6.28049 22.1637 6.28049H8.51961C7.82189 6.28049 7.25627 5.72336 7.25627 5.03612ZM2.70825 13.0001C2.70825 12.3128 3.27387 11.7557 3.97159 11.7557H22.1637C22.8614 11.7557 23.427 12.3128 23.427 13.0001C23.427 13.6873 22.8614 14.2445 22.1637 14.2445H3.97159C3.27387 14.2445 2.70825 13.6873 2.70825 13.0001ZM7.25627 20.964C7.25627 20.2768 7.82189 19.7197 8.51961 19.7197H22.1637C22.8614 19.7197 23.427 20.2768 23.427 20.964C23.427 21.6513 22.8614 22.2084 22.1637 22.2084H8.51961C7.82189 22.2084 7.25627 21.6513 7.25627 20.964Z" fill="currentColor"/>
+</g>
+<defs>
+<clipPath id="clip0_196_489">
+<rect width="26" height="26" fill="currentColor"/>
+</clipPath>
+</defs>
+</svg>`,
+};
+
+// Videos are referenced once and turned into blob: URLs, so the bundled file embeds each video only once
+// and re-rendering the chat never copies the video data around.
+function blobUrl(src) {
+  if (!src.startsWith('data:')) return src;
+  const comma = src.indexOf(','), mime = src.slice(5, src.indexOf(';')), bin = atob(src.slice(comma + 1));
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return URL.createObjectURL(new Blob([bytes], { type: mime }));
+}
+const VIDEO = {
+  live: blobUrl('assets/video_live.mp4'),
+  walking: blobUrl('assets/video_walking.mp4'),
+  lying: blobUrl('assets/video_lying.mp4'),
+  barking1: blobUrl('assets/video_barking1.mp4'),
+  barking2: blobUrl('assets/video_barking2.mp4'),
+};
+const ASSET = {
+  playEnd: 'assets/play_end.svg',
+  plus: 'assets/plus.svg',
+  favOn: 'assets/sfv_a.svg',
+  favOff: 'assets/sfv_b.svg',
+  thumbUp: 'assets/thumb_up.svg',
+  thumbDown: 'assets/thumb_down.svg',
+  line: 'assets/line.svg',
+  arrowDown: 'assets/arrow_down2.svg',
+};
+
+// ─── Chat data ───────────────────────────────────────────────────────────────
+// Each group = one block in the Figma chat list (12px between groups, 8px inside).
+// `video` stays null until the real clips are provided; the poster is shown instead.
+const chat = {
+  groups: [
+    { items: [
+      { type: 'ai', text: 'Archie was last seen lying down on the couch @01:10 PM.\nI also saw Archie walking toward the couch before lying down.', time: '01:15 PM' },
+      { type: 'clip', id: 'c1', title: '🎬 Walking toward the couch @01:08 PM', poster: null, video: VIDEO.walking,
+        zoom: { s: 1.6, keys: [[0, .55, .62], [2, .50, .65], [4, .60, .55], [6, .62, .38], [6.6, .57, .22], [7, .43, .14], [7.3, .34, .22], [7.9, .22, .28]] } },
+      { type: 'clip', id: 'c2', title: '🎬 Lying down on the couch @01:10 PM', poster: null, video: VIDEO.lying,
+        zoom: { s: 1.06, keys: [[0, .5, .5]] } },
+      { type: 'time', time: '01:15 PM' },
+      { type: 'feedback', id: 'f1' },
+    ] },
+    { items: [ { type: 'divider', label: 'Unread' } ] },
+    { items: [
+      { type: 'ai', text: 'Earlier today, we’ve noticed increased barking from Archie. The recorded clips may help understand why.', time: '01:20 PM' },
+      { type: 'clip', id: 'c3', title: '🎬 Barking @09:23 AM', poster: null, video: VIDEO.barking1,
+        zoom: { s: 1.12, keys: [[0, .5, .5]] } },
+      { type: 'clip', id: 'c4', title: '🎬 Barking @10:01 AM', poster: null, video: VIDEO.barking2,
+        zoom: { s: 1.6, keys: [[0, .49, .54], [2, .55, .51], [4, .60, .50], [6, .71, .39], [7.9, .65, .36]] } },
+      { type: 'time', time: '01:20 PM' },
+      { type: 'feedback', id: 'f2' },
+      { type: 'ai', text: 'Do you also want to see videos of Archie barking earlier @10:03 AM?', time: '01:20 PM' },
+    ] },
+  ],
+};
+const favs = { c1: true, c2: false, c3: false, c4: false };
+const feedback = {};
+let nannyTyping = false;
+
+const CHIPS = [
+  { text: 'What can Nanny do?', w: 66, emoji: '⭐', opensFeatures: true },
+  { text: 'Show me cute moments', w: 88, emoji: '🎬' },
+  { text: 'Any unusual behavior?', w: 81, emoji: '🔍' },
+  { text: 'What’s Archie doing now?', w: 88, emoji: '👀' },
+  { text: 'Summarize today’s activity', w: 99, emoji: '📒' },
+];
+const NANNY_REPLY = 'Got it! I’ll keep an eye on Archie and let you know as soon as I notice anything new 🐾';
+// Quick prompt → Nanny reply (text, plus an optional clip).
+const CHIP_REPLIES = {
+  'What can Nanny do?': { text: 'I’m here to help you keep up with Archie’s day, helping you see more, understand better, and worry less.\n\n' +
+    '🎵 **Calm My Pet:** Play relaxing music to help Archie unwind.\n' +
+    '📸 **Pet ID:** Update Archie’s photo to improve alert accuracy.\n' +
+    '🩺 **AI Health Checker:** Analyze Archie’s photos for health insights.' },
+  'Show me cute moments': { text: 'I spotted Archie rolling around on the couch at 10:30 AM. Here’s a little moment to make you smile! 🐾',
+    clip: { title: '🎬 Rolling around on the couch @10:30 AM', video: VIDEO.live } },
+  'Any unusual behavior?': { text: 'I noticed Archie pacing near the door at 12:05 PM. Take a look at the clip to see what was happening. 🔍',
+    clip: { title: '🎬 Pacing near the door @12:05 PM', video: VIDEO.live } },
+  'What’s Archie doing now?': { text: 'Archie was last seen resting on the couch at 01:10 PM. I saw Archie walking over before settling down.',
+    clip: { title: '🎬 Resting on the couch @01:10 PM', video: VIDEO.lying, zoom: { s: 1.06, keys: [[0, .5, .5]] } } },
+  'Summarize today’s activity': { text: 'Archie’s day so far 🐾\n\n' +
+    '- 🍽️ Digging into his breakfast @08:00 AM\n' +
+    '- 🎾 Playtime to kick off the morning @09:00 AM\n' +
+    '- 🔍 A little exploring around the house @10:30 AM\n' +
+    '- 💤 Getting cozy on the couch for a well-earned snooze @01:10 PM' },
+};
+let replyClipSeq = 0;
+
+// ─── Rendering ───────────────────────────────────────────────────────────────
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+function nowTime() {
+  const d = new Date(); let h = d.getHours(); const m = String(d.getMinutes()).padStart(2, '0');
+  const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
+  return String(h).padStart(2, '0') + ':' + m + ' ' + ap;
+}
+// Light formatting for Nanny bubbles: **bold**, and consecutive "- " lines become a bullet list.
+function formatBubble(text) {
+  const out = []; let list = null;
+  esc(text).split('\n').forEach(line => {
+    line = line.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+    if (line.startsWith('- ')) { (list = list || []).push('<li>' + line.slice(2) + '</li>'); return; }
+    if (list) { out.push('<ul class="bubble-list">' + list.join('') + '</ul>'); list = null; }
+    out.push(line);
+  });
+  if (list) out.push('<ul class="bubble-list">' + list.join('') + '</ul>');
+  return out.join('\n').replace(/\n?(<ul class="bubble-list">)/g, '$1').replace(/(<\/ul>)\n?/g, '$1');
+}
+function renderItem(it) {
+  switch (it.type) {
+    case 'ai':
+      return '<div class="bubble-wrap"><div class="bubble">' + formatBubble(it.text) + '</div><div class="time">' + it.time + '</div></div>';
+    case 'user':
+      return '<div class="bubble-wrap user"><div class="bubble">' + esc(it.text) + '</div><div class="time">' + it.time + '</div></div>';
+    case 'time':
+      return '<div class="time">' + it.time + '</div>';
+    case 'clip': {
+      const media = it.video
+        ? '<video src="' + it.video + '"' + (it.poster ? ' poster="' + it.poster + '"' : '') + (it.zoom ? ' data-zoom="' + it.id + '"' : '') + ' muted playsinline webkit-playsinline preload="auto"></video>' +
+          '<button class="clip-ended" data-replay aria-label="Replay"><img src="' + ASSET.playEnd + '" alt=""></button>'
+        : '<img src="' + it.poster + '" alt="" draggable="false">';
+      return '<div class="clip"><div class="clip-top"><div class="clip-title">' + esc(it.title) + '</div></div>' +
+        '<div class="clip-media" data-clip="' + it.id + '">' + media +
+        '<button class="clip-fav" data-fav="' + it.id + '" aria-label="Favorite"><img src="' + (favs[it.id] ? ASSET.favOn : ASSET.favOff) + '" alt=""></button>' +
+        '</div></div>';
+    }
+    case 'feedback':
+      return '<div class="feedback"><div class="feedback-label">Good response?</div><div class="fb-btns">' +
+        '<button class="fb-btn' + (feedback[it.id] === 'up' ? ' on' : '') + '" data-fb="' + it.id + '" data-v="up" aria-label="Good"><img src="' + ASSET.thumbUp + '" alt=""></button>' +
+        '<button class="fb-btn' + (feedback[it.id] === 'down' ? ' on' : '') + '" data-fb="' + it.id + '" data-v="down" aria-label="Bad"><img src="' + ASSET.thumbDown + '" alt=""></button>' +
+        '</div></div>';
+    case 'divider':
+      return '<div class="divider"><div class="line"><img src="' + ASSET.line + '" alt=""></div>' +
+        '<button class="divider-btn" data-divider><img src="' + ASSET.arrowDown + '" alt=""><span>' + esc(it.label) + '</span></button>' +
+        '<div class="line"><img src="' + ASSET.line + '" alt=""></div></div>';
+  }
+  return '';
+}
+// First call renders everything; later calls only append new groups (and toggle the typing dots),
+// so clips that are already on screen keep playing instead of being re-created.
+function renderChat() {
+  [$chatHome, $chatExpand].forEach(view => {
+    let msgs = view.querySelector('.msgs');
+    if (!msgs) { view.innerHTML = '<div class="msgs"></div>'; msgs = view.querySelector('.msgs'); }
+    const old = msgs.querySelector('.grp.typing-grp'); if (old) old.remove();
+    const have = msgs.querySelectorAll('.grp').length;
+    const html = chat.groups.slice(have).map(g => '<div class="grp">' + g.items.map(renderItem).join('') + '</div>').join('');
+    if (html) msgs.insertAdjacentHTML('beforeend', html);
+    if (nannyTyping) msgs.insertAdjacentHTML('beforeend', '<div class="grp typing-grp"><div class="typing"><i></i><i></i><i></i></div></div>');
+    msgs.querySelectorAll('.clip-media[data-clip]').forEach(media => wireClip(view, media));
+    checkClips(view);
+  });
+}// Clips play once and stop on the last frame with a replay overlay (CN prototype behavior).
+// A clip that already played in a view is not restarted when the chat re-renders.
+const played = new WeakMap();
+function viewPlayed(view) { if (!played.has(view)) played.set(view, new Set()); return played.get(view); }
+function wireClip(view, media) {
+  const v = media.querySelector('video'); if (!v) return null;
+  v.muted = true; v.loop = false;
+  v.onended = () => { media.classList.add('ended'); delete media.dataset.want; };
+  return v;
+}
+// Clips start only once they are scrolled into view (≥60% visible) in the active chat view.
+function viewActive(view) { return (view === $chatExpand) === $expand.classList.contains('open'); }
+function visibleBottom(view) {
+  const r = view.getBoundingClientRect();
+  if (view !== $chatExpand) return r.bottom;
+  return Math.min(r.bottom, document.getElementById('compose').getBoundingClientRect().top);
+}
+function checkClips(view) {
+  if (!viewActive(view)) return;
+  const set = viewPlayed(view), top = view.getBoundingClientRect().top, bottom = visibleBottom(view);
+  view.querySelectorAll('.clip-media[data-clip]').forEach(media => {
+    const id = media.dataset.clip;
+    const v = media.querySelector('video'); if (!v) return;
+    const r = media.getBoundingClientRect();
+    const seen = Math.min(r.bottom, bottom) - Math.max(r.top, top);
+    if (set.has(id)) {
+      if (media.dataset.want && seen < r.height * 0.3) {
+        set.delete(id); delete media.dataset.want; v.pause(); v.currentTime = 0;
+      }
+      return;
+    }
+    if (seen >= r.height * 0.6) {
+      set.add(id); media.classList.remove('ended'); media.dataset.want = '1'; v.currentTime = 0;
+      const p = v.play(); if (p && p.catch) p.catch(() => {});
+    }
+  });
+}
+// Re-arm a view (each time it is shown): every clip waits at its first frame until scrolled into view.
+function armClips(view, deferCheck) {
+  viewPlayed(view).clear();
+  view.querySelectorAll('.clip-media[data-clip]').forEach(media => {
+    const v = wireClip(view, media); if (!v) return;
+    v.pause(); media.classList.remove('ended'); delete media.dataset.want;
+    if (v.readyState > 0) v.currentTime = 0;
+  });
+  if (!deferCheck) checkClips(view);
+}
+// Browsers pause muted videos while the page is hidden; resume the ones still meant to play.
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) return;
+  syncLiveVideo();
+  document.querySelectorAll('.clip-media[data-want] video').forEach(v => { if (v.paused) { const p = v.play(); if (p && p.catch) p.catch(() => {}); } });
+});
+// Pan/zoom that follows the pets: keyframes are [time, focusX, focusY] as fractions of the frame.
+const ZOOM = {};
+chat.groups.forEach(g => g.items.forEach(it => { if (it.zoom) ZOOM[it.id] = it.zoom; }));
+function zoomTransform(z, t) {
+  const k = z.keys; let fx = k[0][1], fy = k[0][2];
+  if (t >= k[k.length - 1][0]) { fx = k[k.length - 1][1]; fy = k[k.length - 1][2]; }
+  else for (let i = 0; i < k.length - 1; i++) {
+    if (t >= k[i][0] && t < k[i + 1][0]) {
+      let u = (t - k[i][0]) / (k[i + 1][0] - k[i][0]); u = u * u * (3 - 2 * u);
+      fx = k[i][1] + (k[i + 1][1] - k[i][1]) * u; fy = k[i][2] + (k[i + 1][2] - k[i][2]) * u; break;
+    }
+  }
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const tx = clamp(50 - z.s * fx * 100, 100 - 100 * z.s, 0), ty = clamp(50 - z.s * fy * 100, 100 - 100 * z.s, 0);
+  return 'translate(' + tx.toFixed(2) + '%,' + ty.toFixed(2) + '%) scale(' + z.s + ')';
+}
+(function zoomLoop() {
+  document.querySelectorAll('video[data-zoom]').forEach(v => { v.style.transform = zoomTransform(ZOOM[v.dataset.zoom], v.currentTime || 0); });
+  requestAnimationFrame(zoomLoop);
+})();
+function replayClip(media) {
+  const v = media.querySelector('video'); if (!v) return;
+  media.classList.remove('ended'); v.currentTime = 0;
+  const p = v.play(); if (p && p.catch) p.catch(() => {});
+}
+function scrollExpandToBottom(smooth) {
+  $chatExpand.scrollTo({ top: $chatExpand.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
+  // A smooth scroll can be dropped while the chat is still sliding in; make sure it lands at the bottom.
+  if (smooth) setTimeout(() => {
+    const max = $chatExpand.scrollHeight - $chatExpand.clientHeight;
+    if (max - $chatExpand.scrollTop > 2) $chatExpand.scrollTop = max;
+  }, 450);
+}
+// The prompt list is rendered twice so the marquee can loop seamlessly.
+function renderChips() {
+  const set = hidden => '<div class="chip-set"' + (hidden ? ' aria-hidden="true"' : '') + '>' + CHIPS.map((c, i) =>
+    '<button class="chip" data-chip="' + i + '"' + (hidden ? ' tabindex="-1"' : '') + '><span class="chip-emoji">' + c.emoji + '</span><span>' + esc(c.text) + '</span></button>'
+  ).join('') + '</div>';
+  $chips.innerHTML = set(false) + set(true);
+}
+// ─── Quick prompt marquee ────────────────────────────────────────────────────
+// Scrolls left continuously while the keyboard is open. Touching (or mouse-dragging) pauses it so the
+// row can be swiped by hand; it resumes shortly after release. A tap on a prompt still sends it.
+const MQ_SPEED = 28; // px per second
+let mqPos = 0, mqHeld = false, mqResumeAt = 0, mqLast = 0, mqDragX = null, mqDragStart = 0, mqDragged = false;
+function mqPeriod() { const set = $chips.querySelector('.chip-set'); return set ? set.offsetWidth : 0; }
+function mqWrap() {
+  const period = mqPeriod(); if (!period) return;
+  while (mqPos >= period) mqPos -= period;
+  while (mqPos < 0) mqPos += period;
+}
+function mqTick(t) {
+  const dt = mqLast ? Math.min(0.05, (t - mqLast) / 1000) : 0; mqLast = t;
+  if ($screen.classList.contains('kb-open') && !mqHeld && t >= mqResumeAt) {
+    mqPos += MQ_SPEED * dt; mqWrap(); $chips.scrollLeft = mqPos;
+  }
+  requestAnimationFrame(mqTick);
+}
+function mqPause() { mqHeld = true; }
+function mqRelease() { mqHeld = false; mqPos = $chips.scrollLeft; mqWrap(); $chips.scrollLeft = mqPos; mqResumeAt = performance.now() + 1500; }
+function setupMarquee() {
+  $chips.addEventListener('touchstart', mqPause, { passive: true });
+  $chips.addEventListener('touchend', mqRelease);
+  $chips.addEventListener('touchcancel', mqRelease);
+  $chips.addEventListener('wheel', () => { mqPos = $chips.scrollLeft; mqResumeAt = performance.now() + 1500; }, { passive: true });
+  // Mouse: drag to scroll by hand (touch scrolls natively).
+  $chips.addEventListener('mousedown', e => { mqPause(); mqDragX = e.clientX; mqDragStart = $chips.scrollLeft; mqDragged = false; e.preventDefault(); });
+  document.addEventListener('mousemove', e => {
+    if (mqDragX === null) return;
+    const dx = (e.clientX - mqDragX) / scaleOf();
+    if (Math.abs(dx) > 5) mqDragged = true;
+    $chips.scrollLeft = mqDragStart - dx;
+  });
+  document.addEventListener('mouseup', () => { if (mqDragX === null) return; mqDragX = null; mqRelease(); });
+  requestAnimationFrame(mqTick);
+}
+function renderTabBar() {
+  const tabs = ['home', 'video', 'report', 'menu'];
+  document.getElementById('tabbar').innerHTML = tabs.map(t =>
+    '<button class="tab' + (t === 'home' ? ' on' : ' disabled') + '" aria-label="' + t + '"><span class="tab-ic">' + (NAV_SVGS[t] || '') + '</span></button>'
+  ).join('');
+}
+
+// ─── Keyboard (simulated iOS) ────────────────────────────────────────────────
+let shift = false;
+function renderKeyboard() {
+  const row = s => s.split('').map(ch => '<button class="key" data-key="' + ch + '">' + (shift ? ch.toUpperCase() : ch) + '</button>').join('');
+  $kb.innerHTML = '<div class="kb-inner"><div class="kb-layout">' +
+    '<div class="kb-row r1">' + row('qwertyuiop') + '</div>' +
+    '<div class="kb-row r2">' + row('asdfghjkl') + '</div>' +
+    '<div class="kb-row r3">' + row('zxcvbnm') + '</div>' +
+    '<button class="key sp' + (shift ? ' on' : '') + '" id="kb-shift" aria-label="Shift"><svg width="20" height="19" viewBox="0 0 20 19" fill="' + (shift ? '#000' : 'none') + '"><path d="M10 1.5 1.6 10.2h4.6v7h7.6v-7h4.6L10 1.5Z" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/></svg></button>' +
+    '<button class="key sp" id="kb-del" aria-label="Delete"><svg width="24" height="18" viewBox="0 0 24 18" fill="none"><path d="M7.5 1.5h13a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-13L1.3 9l6.2-7.5Z" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/><path d="M11 5.5l6 7M17 5.5l-6 7" stroke="#000" stroke-width="1.5" stroke-linecap="round"/></svg></button>' +
+    '<button class="key sp txt" id="kb-abc">ABC</button>' +
+    '<button class="key txt" id="kb-space">space</button>' +
+    '<button class="key sp txt" id="kb-return">return</button>' +
+    '</div>' +
+    '<div class="kb-tray"><img src="assets/emoji.svg" alt="">' +
+    '<svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="rgba(27,31,38,0.72)" stroke-width="1.6" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></div>' +
+    '<div class="kb-home"></div></div>';
+}
+function setShift(v) {
+  shift = v;
+  document.querySelectorAll('#kb [data-key]').forEach(k => { k.textContent = shift ? k.dataset.key.toUpperCase() : k.dataset.key; });
+  const s = document.getElementById('kb-shift');
+  if (s) { s.classList.toggle('on', shift); s.querySelector('svg').setAttribute('fill', shift ? '#000' : 'none'); }
+}
+function openKeyboard() {
+  if (!$screen.classList.contains('kb-open')) {
+    $screen.classList.add('kb-open');
+    mqPos = 0; mqResumeAt = performance.now() + 600; $chips.scrollLeft = 0;
+  }
+  $input.focus({ preventScroll: true });
+  setTimeout(() => scrollExpandToBottom(true), 300);
+}
+function closeKeyboard() {
+  $screen.classList.remove('kb-open');
+  $input.blur();
+  syncFabs();
+}
+// Nanny bar at the top of the chat, ball once the chat is scrolled down.
+function syncFabs() {
+  document.getElementById('fab-home').classList.toggle('mini', $chatHome.scrollTop > 8);
+}
+function syncInput() { $inputRow.classList.toggle('has-text', $input.value.trim().length > 0); }
+function typeText(t) {
+  $input.value += t; syncInput();
+  $input.scrollLeft = $input.scrollWidth;
+}
+
+// ─── Sending ─────────────────────────────────────────────────────────────────
+function send(text) {
+  text = (text || '').trim();
+  if (!text) return;
+  chat.groups.push({ items: [ { type: 'user', text, time: nowTime() } ] });
+  nannyTyping = true;
+  renderChat(); scrollExpandToBottom(true);
+  setTimeout(() => {
+    nannyTyping = false;
+    const r = CHIP_REPLIES[text], t = nowTime();
+    const items = [ { type: 'ai', text: r ? r.text : NANNY_REPLY, time: t } ];
+    if (r && r.clip) {
+      const id = 'r' + (++replyClipSeq);
+      favs[id] = false;
+      if (r.clip.zoom) ZOOM[id] = r.clip.zoom;
+      items.push({ type: 'clip', id, title: r.clip.title, poster: null, video: r.clip.video, zoom: r.clip.zoom });
+    }
+    chat.groups.push({ items });
+    renderChat(); scrollExpandToBottom(true);
+  }, 900);
+}
+function sendFromInput() {
+  const t = $input.value;
+  $input.value = ''; syncInput();
+  send(t);
+}
+
+// ─── Expand / collapse ───────────────────────────────────────────────────────
+function sheetTop() { return document.querySelector('.sheet').offsetTop; }
+function setExpandY(y) { $expand.style.transform = 'translate3d(0,' + y + 'px,0)'; }
+// fromNanny: tapping Nanny jumps to the latest message and opens the keyboard.
+// Otherwise (handle / drag) the chat keeps the same scroll position as the home chat.
+function openExplore() {
+  closeKeyboard();
+  const el = document.getElementById('explore');
+  el.scrollTop = 0; el.classList.add('open'); el.setAttribute('aria-hidden', 'false');
+  document.documentElement.classList.add('explore-open');
+  document.getElementById('theme-color').setAttribute('content', '#F8F4FE');
+}
+function closeExplore() {
+  const el = document.getElementById('explore');
+  el.classList.remove('open'); el.setAttribute('aria-hidden', 'true');
+  document.documentElement.classList.remove('explore-open');
+  setTopTint($expand.classList.contains('open'));
+}
+function setTopTint(open) {
+  document.documentElement.classList.toggle('nanny-open', open);
+  document.getElementById('theme-color').setAttribute('content', open ? '#FBF8EE' : '#FEFAF2');
+}
+function openExpand(fromNanny) {
+  const wasOpen = $expand.classList.contains('open');
+  if (!wasOpen) $chatExpand.scrollTop = fromNanny ? $chatExpand.scrollHeight : $chatHome.scrollTop;
+  $expand.classList.remove('dragging'); $expand.style.transform = '';
+  $expand.classList.add('open');
+  setTopTint(true);
+  if (!wasOpen) {
+    $chatHome.querySelectorAll('video').forEach(v => v.pause());
+    armClips($chatExpand, true);
+    setTimeout(() => checkClips($chatExpand), fromNanny ? 650 : 380);
+  }
+  if (fromNanny) setTimeout(openKeyboard, 260);
+}
+function closeExpand() {
+  closeKeyboard();
+  $expand.classList.remove('dragging'); $expand.style.transform = '';
+  const wasOpen = $expand.classList.contains('open');
+  $expand.classList.remove('open');
+  setTopTint(false);
+  if (wasOpen) { $chatExpand.querySelectorAll('video').forEach(v => v.pause()); armClips($chatHome); }
+}
+function touchOf(e) { return (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e; }
+function pointY(e) { return touchOf(e).clientY; }
+function pointX(e) { return touchOf(e).clientX; }
+function scaleOf() { const r = $screen.getBoundingClientRect(); return r.height / 844 || 1; }
+
+function setupSheetDrag() {
+  // Drag the handle up to expand (tap also expands), like the prototype.
+  let startY = 0, dragging = false, moved = false, sc = 1, SHEET_TOP = 326;
+  function start(e) {
+    dragging = true; moved = false; sc = scaleOf(); startY = pointY(e); SHEET_TOP = sheetTop();
+    $chatExpand.scrollTop = $chatHome.scrollTop;
+    $expand.classList.add('dragging'); setExpandY(SHEET_TOP);
+    listen(move, end);
+  }
+  function move(e) {
+    if (!dragging) return;
+    const dy = (startY - pointY(e)) / sc;
+    if (Math.abs(dy) > 4) moved = true;
+    const pct = Math.max(0, Math.min(1, dy / SHEET_TOP));
+    setExpandY(SHEET_TOP * (1 - pct));
+    if (e.cancelable) e.preventDefault();
+  }
+  function end(e) {
+    if (!dragging) return; dragging = false; unlisten(move, end);
+    const dy = (startY - pointY(e)) / sc;
+    if (!moved || dy / SHEET_TOP > 0.12) openExpand(false); else closeExpand();
+  }
+  $handle.addEventListener('mousedown', start);
+  $handle.addEventListener('touchstart', start, { passive: true });
+
+
+  // Drag the Nanny Chat top bar down to collapse; tap on the chevron collapses.
+  let cY = 0, cDrag = false, cMoved = false, cSc = 1;
+  function cStart(e) {
+    if (e.target.closest('#expand-close')) return;
+    cDrag = true; cMoved = false; cSc = scaleOf(); cY = pointY(e); SHEET_TOP = sheetTop();
+    $expand.classList.add('dragging'); setExpandY(0);
+    listen(cMove, cEnd);
+  }
+  function cMove(e) {
+    if (!cDrag) return;
+    const dy = Math.max(0, (pointY(e) - cY) / cSc);
+    if (dy > 4) { cMoved = true; closeKeyboard(); }
+    setExpandY(SHEET_TOP * Math.min(1, dy / SHEET_TOP));
+    if (e.cancelable) e.preventDefault();
+  }
+  function cEnd(e) {
+    if (!cDrag) return; cDrag = false; unlisten(cMove, cEnd);
+    const dy = Math.max(0, (pointY(e) - cY) / cSc);
+    if (!cMoved) { $expand.classList.remove('dragging'); $expand.style.transform = ''; return; }
+    if (dy / SHEET_TOP > 0.18) closeExpand(); else openExpand(false);
+  }
+  $expandTop.addEventListener('mousedown', cStart);
+  $expandTop.addEventListener('touchstart', cStart, { passive: true });
+}
+function listen(m, u) {
+  document.addEventListener('mousemove', m); document.addEventListener('mouseup', u);
+  document.addEventListener('touchmove', m, { passive: false }); document.addEventListener('touchend', u);
+}
+function unlisten(m, u) {
+  document.removeEventListener('mousemove', m); document.removeEventListener('mouseup', u);
+  document.removeEventListener('touchmove', m); document.removeEventListener('touchend', u);
+}
+
+// ─── Live view: camera switching (dropdown menu + swipe) ─────────────────────
+const CAMS = [
+  { name: 'Living room', online: true },
+  { name: 'Kitchen', online: true },
+  { name: 'Bedroom', online: false },
+  { name: 'Hallway', online: false },
+  { name: 'Bedroom2', online: true },
+];
+const CHECK_SVG = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3.5 10.5 8 15 16.5 4" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function renderCams() {
+  const c = CAMS[camIndex];
+  document.getElementById('cam-name').textContent = c.name;
+  document.getElementById('cam-dot').className = 'dot' + (c.online ? '' : ' offline');
+  document.getElementById('cam-menu').innerHTML = CAMS.map((c, i) =>
+    '<button class="cam-row" role="menuitemradio" aria-checked="' + (i === camIndex) + '" data-cam="' + i + '"><span class="chk">' + (i === camIndex ? CHECK_SVG : '') + '</span>' +
+    '<span class="dot' + (c.online ? '' : ' offline') + '"></span><span>' + esc(c.name) + '</span></button>'
+  ).join('') + '<div class="cam-sep"></div><button class="cam-row add" data-cam-add><span class="chk"></span><span class="plus">+</span><span>Add camera</span></button>';
+}
+function setCamsOpen(open) {
+  document.getElementById('cam-menu').classList.toggle('open', open);
+  document.getElementById('cam-scrim').classList.toggle('open', open);
+  document.getElementById('cam-pill').classList.toggle('open', open);
+  document.getElementById('cam-pill').setAttribute('aria-expanded', open);
+}
+let camIndex = 0, powerOff = false;
+function setCam(i) {
+  camIndex = Math.max(0, Math.min(CAMS.length - 1, i));
+  $track.style.transform = 'translateX(' + (-100 * camIndex) + '%)';
+  document.getElementById('live').classList.toggle('disc', !CAMS[camIndex].online);
+  renderCams();
+  syncLiveVideo();
+}
+function syncLiveVideo() {
+  const v = document.getElementById('live-video');
+  if (camIndex === 0 && !powerOff) { const p = v.play(); if (p && p.catch) p.catch(() => {}); } else v.pause();
+}
+function setupLiveSwipe() {
+  const live = document.getElementById('live');
+  let sx = 0, sy = 0, dx = 0, active = false, horiz = null, sc = 1;
+  function down(e) {
+    if (e.target.closest('button')) return;
+    active = true; horiz = null; dx = 0; sc = scaleOf(); sx = pointX(e); sy = pointY(e);
+    $track.classList.add('dragging');
+    listen(mv, up);
+  }
+  function mv(e) {
+    if (!active) return;
+    dx = (pointX(e) - sx) / sc; const dy = (pointY(e) - sy) / sc;
+    if (horiz === null && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) horiz = Math.abs(dx) > Math.abs(dy);
+    if (!horiz) return;
+    if (e.cancelable) e.preventDefault();
+    const edge = (camIndex === 0 && dx > 0) || (camIndex === CAMS.length - 1 && dx < 0);
+    $track.style.transform = 'translateX(calc(' + (-100 * camIndex) + '% + ' + (edge ? dx * 0.3 : dx) + 'px))';
+  }
+  function up() {
+    if (!active) return; active = false; unlisten(mv, up);
+    $track.classList.remove('dragging');
+    if (horiz && Math.abs(dx) > 50) setCam(camIndex + (dx < 0 ? 1 : -1)); else setCam(camIndex);
+  }
+  live.addEventListener('mousedown', down);
+  live.addEventListener('touchstart', down, { passive: true });
+}
+
+// ─── Wiring ──────────────────────────────────────────────────────────────────
+const $screen = document.getElementById('screen');
+const $chatHome = document.getElementById('chat-home');
+const $chatExpand = document.getElementById('chat-expand');
+const $expand = document.getElementById('expand');
+const $expandTop = document.getElementById('expand-top');
+const $handle = document.getElementById('sheet-handle');
+const $chips = document.getElementById('chips');
+const $kb = document.getElementById('kb');
+const $input = document.getElementById('chat-input');
+const $inputRow = document.getElementById('input-row');
+const $track = document.getElementById('live-track');
+
+document.getElementById('live-video').src = VIDEO.barking2;
+renderTabBar();
+renderChips();
+renderKeyboard();
+renderChat();
+armClips($chatHome);
+$chatHome.addEventListener('scroll', () => checkClips($chatHome), { passive: true });
+$chatExpand.addEventListener('scroll', () => checkClips($chatExpand), { passive: true });
+document.getElementById('kb').addEventListener('transitionend', e => {
+  if (e.target.id === 'kb' && $screen.classList.contains('kb-open')) scrollExpandToBottom(true);
+  checkClips($chatExpand);
+});
+setCam(0);
+setupSheetDrag();
+setupLiveSwipe();
+
+// Nanny bar / ball on Home opens Nanny Chat with the keyboard up.
+document.getElementById('fab-home').addEventListener('click', () => openExpand(true));
+$chatHome.addEventListener('scroll', syncFabs, { passive: true });
+// Scrolling the chat by hand (finger or wheel) puts the keyboard away; the chat bar stays.
+['touchmove', 'wheel'].forEach(ev => $chatExpand.addEventListener(ev, () => { if ($screen.classList.contains('kb-open')) closeKeyboard(); }, { passive: true }));
+setupMarquee();
+syncFabs();
+document.getElementById('expand-close').addEventListener('click', closeExpand);
+document.getElementById('explore-close').addEventListener('click', closeExplore);
+document.getElementById('cam-pill').addEventListener('click', e => {
+  e.stopPropagation(); setCamsOpen(!document.getElementById('cam-menu').classList.contains('open'));
+});
+document.getElementById('cam-scrim').addEventListener('click', () => setCamsOpen(false));
+document.getElementById('cam-menu').addEventListener('click', e => {
+  const t = e.target.closest('[data-cam]');
+  if (t) setCam(+t.dataset.cam);
+  if (t || e.target.closest('[data-cam-add]')) setCamsOpen(false);
+});
+document.getElementById('power-btn').addEventListener('click', () => {
+  powerOff = !powerOff; document.getElementById('live').classList.toggle('off', powerOff); syncLiveVideo();
+});
+document.getElementById('sound-btn').addEventListener('click', e => e.currentTarget.classList.toggle('on'));
+document.getElementById('send-btn').addEventListener('click', e => { e.stopPropagation(); sendFromInput(); });
+
+// Keep focus in the input while tapping simulated keys.
+$kb.addEventListener('mousedown', e => e.preventDefault());
+$kb.addEventListener('click', e => {
+  const k = e.target.closest('[data-key]');
+  if (k) { typeText(shift ? k.dataset.key.toUpperCase() : k.dataset.key); if (shift) setShift(false); return; }
+  if (e.target.closest('#kb-shift')) return setShift(!shift);
+  if (e.target.closest('#kb-del')) { $input.value = $input.value.slice(0, -1); syncInput(); return; }
+  if (e.target.closest('#kb-space')) return typeText(' ');
+  if (e.target.closest('#kb-return')) return closeKeyboard();
+});
+$input.addEventListener('input', syncInput);
+$input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); closeKeyboard(); } });
+$inputRow.addEventListener('click', e => { if (!e.target.closest('#send-btn')) openKeyboard(); });
+
+// Chips send immediately.
+$chips.addEventListener('click', e => {
+  const c = e.target.closest('[data-chip]');
+  if (!c) return;
+  if (mqDragged) { mqDragged = false; return; }
+  if (CHIPS[+c.dataset.chip].opensFeatures) return openExplore();
+  closeKeyboard(); send(CHIPS[+c.dataset.chip].text);
+});
+
+// Tapping blank space in Nanny Chat dismisses the keyboard.
+$expand.addEventListener('click', e => {
+  if (!$screen.classList.contains('kb-open')) return;
+  if (e.target.closest('#panel') || e.target.closest('button')) return;
+  closeKeyboard();
+});
+
+// Favorites, feedback (shared by both chat views).
+$screen.addEventListener('click', e => {
+  const f = e.target.closest('[data-fav]');
+  if (f) { e.stopPropagation(); favs[f.dataset.fav] = !favs[f.dataset.fav]; syncFav(f.dataset.fav); return; }
+  const rp = e.target.closest('[data-replay]');
+  if (rp) { e.stopPropagation(); replayClip(rp.closest('.clip-media')); return; }
+  const fb = e.target.closest('[data-fb]');
+  if (fb) { const id = fb.dataset.fb, v = fb.dataset.v; feedback[id] = feedback[id] === v ? null : v; syncFeedback(id); return; }
+});
+function syncFav(id) {
+  document.querySelectorAll('[data-fav="' + id + '"] img').forEach(img => { img.src = favs[id] ? ASSET.favOn : ASSET.favOff; });
+}
+function syncFeedback(id) {
+  document.querySelectorAll('[data-fb="' + id + '"]').forEach(b => b.classList.toggle('on', feedback[id] === b.dataset.v));
+}
+</script>
+
+<!-- fit-to-viewport scaler -->
+<script>
+(function() {
+  var root = document.getElementById('root');
+  function fit() {
+    if (window.innerWidth <= 480) { root.style.transform = ''; return; }
+    var pad = 28;
+    var s = Math.min((window.innerWidth - pad) / 390, (window.innerHeight - pad) / 844, 1);
+    root.style.transform = 'scale(' + s + ')';
+  }
+  window.addEventListener('resize', fit);
+  fit();
+})();
+document.addEventListener('touchmove', function(e) { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+</script>
+</body>
+</html>
