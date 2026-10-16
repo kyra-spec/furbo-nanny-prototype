@@ -485,7 +485,8 @@ img { display: block; }
 .fb-opt.on { background: #F5E096; }
 .fb-opts.done { pointer-events: none; opacity: .55; }
 .cta-row { display: flex; margin-top: 2px; }
-.ai-note { display: none; }
+.ai-note { position: relative; background: #FAF9F5; text-align: center; font-size: 12px; line-height: 16px; color: var(--color-black-70); padding: 8px 16px calc(var(--cb) - 6px); }
+.screen.kb-open .ai-note { display: none; }
 .ai-note-top { text-align: center; font-size: 12px; line-height: 16px; color: var(--color-black-70); padding: 4px 8px 6px; }
 .screen.fb-mode .send-btn { display: block; color: var(--color-black-30); }
 .screen.fb-mode .input-card.has-sel .send-btn { color: var(--color-yellow-100); }
@@ -558,13 +559,13 @@ img { display: block; }
 .expand-title { position: absolute; left: 0; right: 0; top: calc(var(--sb) + 1px); height: 44px; display: flex; align-items: center; justify-content: center;
   font-size: 18px; line-height: 26px; font-weight: 500; color: var(--color-black-100); pointer-events: none; }
 .chat-expand { position: relative; z-index: 1; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden;
-  padding: 0 16px calc(76px + var(--cb)); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+  padding: 0 16px calc(96px + var(--cb)); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
 .screen.kb-open .chat-expand { padding-bottom: 430px; }
 
 /* Bottom dock of Nanny Chat: the Nanny bar/ball while browsing, the quick prompts + text field + keyboard while typing */
 .dock { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; pointer-events: none; }
 .dock > * { pointer-events: auto; }
-.expand .chat-fade { bottom: 0; height: calc(var(--cb) + 150px); z-index: 2;
+.expand .chat-fade { display: none; bottom: 0; height: calc(var(--cb) + 150px); z-index: 2;
   -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
   -webkit-mask-image: linear-gradient(transparent 0%, rgba(0,0,0,0.25) 25%, rgba(0,0,0,0.7) 50%, #000 72%);
   mask-image: linear-gradient(transparent 0%, rgba(0,0,0,0.25) 25%, rgba(0,0,0,0.7) 50%, #000 72%);
@@ -572,8 +573,8 @@ img { display: block; }
 .screen.kb-open .expand .chat-fade { opacity: 0; }
 .expand .chat-fade { transition: opacity .2s ease; }
 .compose { position: relative; }
-.compose::before { content: ''; position: absolute; left: 0; right: 0; top: -28px; bottom: 0; pointer-events: none; display: none;
-  background: linear-gradient(rgba(250,249,245,0), #FAF9F5 28px); }
+.compose::before { content: ''; position: absolute; left: 0; right: 0; top: -14px; bottom: 0; pointer-events: none;
+  background: linear-gradient(rgba(250,249,245,0), #FAF9F5 14px); }
 .compose > * { position: relative; }
 .screen.kb-open .compose::before { display: block; }
 .compose .chips { display: none; }
@@ -587,7 +588,7 @@ img { display: block; }
 .chip:active { background: rgba(67,67,67,0.14); }
 .chip-emoji { font-size: 16px; line-height: 20px; flex: none; width: 20px; text-align: center; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; }
 .chip span { font-size: 14px; line-height: 15px; font-weight: 500; color: var(--color-black-100); white-space: nowrap; }
-.input-card { margin: 0 16px calc(var(--cb) + 4px); height: 48px; transition: margin-bottom .28s cubic-bezier(.22,.9,.36,1); border-radius: 24px; background: #fff; display: flex; align-items: center; gap: 8px; padding: 0 6px 0 12px;
+.input-card { margin: 0 16px 0; height: 48px; transition: margin-bottom .28s cubic-bezier(.22,.9,.36,1); border-radius: 24px; background: #fff; display: flex; align-items: center; gap: 8px; padding: 0 6px 0 12px;
   box-shadow: 0 -2px 8px rgba(185,165,240,0.45), 0 3px 9px rgba(140,175,235,0.5), 0 0 0 1px rgba(205,195,245,0.6); }
 .screen.kb-open .input-card { margin-bottom: 16px; }
 .input-card .attach { width: 24px; height: 24px; flex: none; }
@@ -1061,7 +1062,7 @@ function renderGroup(g) {
 function renderChat() {
   [$chatHome, $chatExpand].forEach(view => {
     let msgs = view.querySelector('.msgs');
-    if (!msgs) { view.innerHTML = '<div class="msgs"><div class="ai-note-top">Furbo Nanny uses AI, please check for accuracy.</div></div>'; msgs = view.querySelector('.msgs'); }
+    if (!msgs) { view.innerHTML = '<div class="msgs"></div>'; msgs = view.querySelector('.msgs'); }
     const old = msgs.querySelector('.grp.typing-grp'); if (old) old.remove();
     const have = msgs.querySelectorAll('.grp').length;
     const html = chat.groups.slice(have).map(g => '<div class="grp">' + renderGroup(g) + '</div>').join('');
