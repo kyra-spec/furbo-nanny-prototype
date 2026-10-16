@@ -198,9 +198,9 @@ img { display: block; }
 
 /* Floating nav bar in iOS "liquid glass" style: mostly clear, a light blur that lets the chat show through as it
    scrolls underneath, a bright specular rim on the top edge and a soft lower rim, like a curved piece of glass. */
-.navbar { position: absolute; left: 50%; bottom: var(--nav-b); width: 318px; height: 48px; margin-left: -159px; z-index: 20;
+.navbar { position: absolute; left: 0; right: 0; margin: 0 auto; bottom: var(--nav-b); width: calc((100% - 40px) / 1.1667); height: 48px; z-index: 20;
   display: flex; align-items: center; padding: 0 4px; border-radius: 24px; isolation: isolate;
-  scale: 1.2083; transform-origin: 50% 100%;
+  scale: 1.1667; transform-origin: 50% 100%;
   transition: transform .25s ease, opacity .2s ease, scale .32s cubic-bezier(.3,.9,.4,1);
   background: rgba(255,255,255,0.16);
   -webkit-backdrop-filter: blur(7px) saturate(1.9) brightness(1.06); backdrop-filter: blur(7px) saturate(1.9) brightness(1.06);
@@ -211,7 +211,7 @@ img { display: block; }
 .screen.nav-mini .navbar { scale: 1; }
 .screen.home-bottom .askme-bubble { opacity: 0; pointer-events: none; }
 /* at the bottom of the Home chat the nav bar turns into the chat bar (tap = Nanny Chat with the keyboard) */
-.home-chatbar { position: absolute; left: 16px; right: 16px; bottom: calc(var(--nav-b) + 70px); z-index: 20; height: 48px; border-radius: 24px; background: #fff;
+.home-chatbar { position: absolute; left: 16px; right: 16px; bottom: calc(var(--nav-b) + 68px); z-index: 20; height: 48px; border-radius: 24px; background: #fff;
   display: flex; align-items: center; gap: 8px; padding: 0 12px; font-size: 16px; color: var(--color-black-50); cursor: text;
   box-shadow: 0 -2px 8px rgba(185,165,240,0.45), 0 3px 9px rgba(140,175,235,0.5), 0 0 0 1px rgba(205,195,245,0.6);
   opacity: 0; transform: translateY(14px) scale(.96); pointer-events: none; transition: opacity .22s ease, transform .28s cubic-bezier(.3,.9,.4,1); }
@@ -226,7 +226,7 @@ img { display: block; }
 .navbar::after { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
   background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.15) 40%, rgba(255,255,255,0.1) 60%, rgba(255,255,255,0.7));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
-.nav-item { position: relative; z-index: 1; width: 56px; height: 38px; flex: none; border-radius: 19px; display: flex; align-items: center; justify-content: center;
+.nav-item { position: relative; z-index: 1; width: auto; height: 38px; flex: 1 1 0; border-radius: 19px; display: flex; align-items: center; justify-content: center;
   color: #3A3A3A; filter: drop-shadow(0 0 5px rgba(255,255,255,0.75)); }
 .nav-item svg { width: 24px; height: 24px; }
 /* the home glyph is a solid shape that fills its whole box; shrink it so it reads the same size as the outlined icons */
@@ -237,13 +237,13 @@ img { display: block; }
   background: rgba(60,60,67,0.13); box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.35);
   transition: transform .32s cubic-bezier(.3,1.25,.5,1); }
 .screen.search-kb .navbar, .screen.player-open .navbar { opacity: 0; pointer-events: none; transform: translateY(20px); }
-.nav-nanny { position: relative; width: 86px; }
+.nav-nanny { position: relative; flex-grow: 1.25; }
 .nav-nanny .face { width: 42px; height: 42px; margin-top: 0; border-radius: 50%; overflow: hidden; position: relative;
   box-shadow: 0 0 0 1.5px rgba(255,255,255,0.9), 0 0 12px rgba(120,150,245,0.7), 0 2px 10px rgba(247,205,61,0.35); }
 .nav-nanny .face img { position: absolute; left: -11%; top: -11%; width: 122%; height: 122%; max-width: none; }
 .nav-nanny:active .face { transform: scale(.94); }
 /* "Ask me!" bubble above Nanny: pops in, bobs, then goes away */
-.askme-bubble { position: absolute; left: 50%; bottom: calc(var(--nav-b) + 52px); z-index: 21; width: 89px; height: 34px; margin-left: -44.5px;
+.askme-bubble { position: absolute; left: 50%; bottom: calc(var(--nav-b) + 50px); z-index: 21; width: 89px; height: 34px; margin-left: -44.5px;
   pointer-events: none; opacity: 0; transform: translateY(8px) scale(.6); transform-origin: 50% 100%;
   transition: opacity .22s ease, transform .22s ease, bottom .32s cubic-bezier(.3,.9,.4,1); }
 .askme-bubble.show { opacity: 1; transform: none; transition: opacity .2s ease, transform .45s cubic-bezier(.3,1.6,.5,1), bottom .32s cubic-bezier(.3,.9,.4,1); }
@@ -1219,7 +1219,7 @@ function renderTabBar() {
 const PAGE_TINT = { home: '#FFFEFB', video: '#FFFFFF', report: '#FBF9F5', menu: '#F5F5F5' };
 function moveNavIndicator() {
   const btn = document.querySelector('.nav-item[data-tab="' + currentTab + '"]');
-  if (btn) document.getElementById('nav-ind').style.transform = 'translateX(' + (btn.offsetLeft - 4) + 'px)';
+  if (btn) { const ind = document.getElementById('nav-ind'); ind.style.width = btn.offsetWidth + 'px'; ind.style.transform = 'translateX(' + (btn.offsetLeft - 4) + 'px)'; }
 }
 const lastScrollY = new WeakMap();
 function setNavMini(on) { $screen.classList.toggle('nav-mini', on); }
@@ -1576,6 +1576,7 @@ document.getElementById('home-chatbar').addEventListener('click', () => openExpa
 })();
 document.getElementById('tabbar').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (b) setTab(b.dataset.tab); });
 moveNavIndicator();
+window.addEventListener('resize', moveNavIndicator);
 startBubble();
 // Scrolling the chat by hand (finger or wheel) puts the keyboard away; the chat bar stays.
 ['touchmove', 'wheel'].forEach(ev => $chatExpand.addEventListener(ev, () => { if ($screen.classList.contains('kb-open')) closeKeyboard(); }, { passive: true }));
