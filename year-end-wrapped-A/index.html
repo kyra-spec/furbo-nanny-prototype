@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>A_Year end wrapped</title>
+<style>
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ height:100%; margin:0; touch-action:pan-x pan-y; -webkit-text-size-adjust:100%; }
+  body{ background:#f4efe3; display:flex; align-items:center; justify-content:center; overflow:hidden;
+        font-family:-apple-system,'Helvetica Neue',Arial,sans-serif; user-select:none; -webkit-user-select:none; overscroll-behavior:none; }
+  .app{ display:flex; align-items:center; gap:28px; position:relative; }
+  .nav{ width:48px; height:48px; border-radius:50%; border:0; background:#fff; color:#434343; cursor:pointer;
+        box-shadow:0 4px 14px rgba(67,67,67,.16); display:grid; place-items:center; transition:transform .2s, opacity .2s; }
+  .nav:hover{ transform:scale(1.08); } .nav:active{ transform:scale(.94); }
+  .nav[disabled]{ opacity:.3; cursor:default; transform:none; }
+  .nav svg{ width:22px; height:22px; }
+  .phone{ position:relative; border-radius:38px; overflow:hidden; background:#f7cd3d;
+          box-shadow:0 0 0 7px #2c2c2c, 0 24px 60px rgba(67,67,67,.35); }
+  .stage{ position:absolute; left:0; top:0; transform-origin:0 0; overflow:hidden; background:#f7cd3d; }
+  .hint{ position:fixed; left:0; right:0; bottom:10px; text-align:center; font-size:12px; color:#8a8170; pointer-events:none; }
+
+  /* pages */
+  .page{ position:absolute; inset:0; display:none; }
+  .page.active{ display:block; }
+  .bk{ position:absolute; inset:-60px; background-size:cover; background-position:center; filter:blur(30px); transform:scale(1.15); }
+  .world{ position:absolute; width:390px; height:844px; left:var(--wl,0px); top:var(--wt,0px); overflow:visible; }
+  .world>.pimg{ position:absolute; left:0; top:0; width:390px; height:844px; display:block; }
+  .page.active .world>.in{ animation:pgIn .8s cubic-bezier(.22,.9,.3,1) both; }
+  @keyframes pgIn{ from{ opacity:0; transform:translateY(16px) scale(.975); } to{ opacity:1; transform:none; } }
+  .layer{ position:absolute; display:block; }
+
+  /* progress bar overlay (fills the grey segments baked into the artwork) */
+  .pbar{ position:absolute; left:0; top:0; width:390px; height:90px; pointer-events:none; }
+  .pbar i{ position:absolute; top:62.6px; height:3.8px; width:31.2px; border-radius:2px; background:#434343; transform-origin:0 50%; }
+  .pbar i.anim{ transform:scaleX(0); }
+  .page.active .pbar i.anim{ animation:fill .55s ease-out .75s forwards; }
+  @keyframes fill{ to{ transform:scaleX(1); } }
+
+  /* hotspots */
+  .hot{ position:absolute; z-index:5; padding:0; margin:0; border:0; background:transparent; border-radius:36px; cursor:pointer; outline:none; }
+  .hot:active{ background:rgba(255,255,255,.28); }
+  .hot:focus-visible{ box-shadow:0 0 0 3px rgba(81,112,215,.8); }
+
+  /* page 4 scenery strip */
+  .rot{ position:absolute; left:181px; top:470px; width:0; height:0; transform:rotate(-5deg); }
+  .strip{ position:absolute; left:0; top:0; width:0; height:0; will-change:transform; }
+  .card{ position:absolute; padding:7px; border-radius:14px; background:#fffbea;
+         box-shadow:0 8px 18px rgba(176,120,0,.16); transition:transform .55s cubic-bezier(.3,1.4,.5,1), box-shadow .5s, filter .5s; }
+  .card i{ display:block; width:100%; height:100%; border-radius:8px; background-size:cover; background-position:center; }
+  .card svg{ position:absolute; left:23px; top:50%; width:167px; height:50px; margin-top:-25px; }
+  .card.center svg{ display:none; }
+  .landed .card.center{ transform:scale(1.055); box-shadow:0 0 0 4px rgba(255,255,255,.85), 0 12px 34px rgba(247,190,30,.55); }
+  .landed .card:not(.center){ filter:brightness(.94); transform:scale(.97); }
+  .fg47{ opacity:0; transform:scale(.6); transform-origin:50% 55%; }
+  .landed .fg47{ animation:pop47 .6s cubic-bezier(.3,1.6,.5,1) both; }
+  .landed .fg47.t2{ animation-delay:.12s; }
+  @keyframes pop47{ from{ opacity:0; transform:scale(.6); } to{ opacity:1; transform:scale(1); } }
+  .bobbing{ animation:bob 3.6s ease-in-out infinite alternate; }
+  @keyframes bob{ from{ transform:translateY(0); } to{ transform:translateY(-4px); } }
+
+  canvas.liquid{ position:absolute; left:0; top:0; z-index:30; pointer-events:none; }
+  .toast{ position:absolute; left:50%; bottom:90px; transform:translate(-50%,12px); background:rgba(40,40,40,.9); color:#fff; font-size:13px;
+          padding:9px 16px; border-radius:20px; opacity:0; transition:.3s; z-index:40; pointer-events:none; white-space:nowrap; }
+  .toast.on{ opacity:1; transform:translate(-50%,0); }
+
+  /* phone (<=480px): edge-to-edge, no frame */
+  body.mobile{ height:100dvh; } html:has(body.mobile){ height:100dvh; }
+  body.mobile .app{ width:100%; height:100%; justify-content:center; }
+  body.mobile .phone{ border-radius:0; box-shadow:none; }
+  body.mobile .nav, body.mobile .hint{ display:none; }
+  @media (prefers-reduced-motion:reduce){ .page.active .world>.in{ animation:none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <button class="nav" id="prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <div class="phone" id="phone"><div class="stage" id="stage">
+    <canvas class="liquid" id="liquid"></canvas>
+    <div class="toast" id="toast">Prototype</div>
+  </div></div>
+  <button class="nav" id="next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+</div>
+<div class="hint">← → 或點擊畫面左右側切換頁面</div>
+
+<script>
+(function(){
+  /* ---------- page definitions ---------- */
+  // bar = number of filled progress segments (pages 2-10 of the story); 10th artwork page (blank) is skipped for now
+  var PAGES = [
+    {n:1,  img:'img/p01.jpg', bar:0, hot:[{x:159,y:687,w:72,h:72,a:'next'}]},
+    {n:2,  img:'img/p02.jpg', bar:1},
+    {n:3,  img:'img/p03.jpg', bar:2},
+    {n:4,  img:'img/p04_bg.jpg', bar:3, scenery:true},
+    {n:5,  img:'img/p05.jpg', bar:4},
+    {n:6,  img:'img/p06.jpg', bar:5},
+    {n:7,  img:'img/p07.jpg', bar:6},
+    {n:8,  img:'img/p08.jpg', bar:7},
+    {n:9,  img:'img/p09.jpg', bar:8},
+    {n:11, img:'img/p11.jpg', bar:0, hot:[{x:159,y:687,w:72,h:72,a:'next'}], swipeUp:true},
+    {n:12, img:'img/p12.jpg', bar:0, hot:[{x:95,y:663,w:200,h:48,a:'share'},{x:150,y:726,w:90,h:44,a:'replay'}]}
+  ];
+  var STORY = {bar:true};
+  var stage = document.getElementById('stage'), phone = document.getElementById('phone');
+  var prevB = document.getElementById('prev'), nextB = document.getElementById('next'), toast = document.getElementById('toast');
+  var canvas = document.getElementById('liquid'), ctx = canvas.getContext('2d');
+  var N = PAGES.length, cur = -1, busy = false, SW = 390, SH = 844, mobile = false;
+  var pageEls = [];
+  var scn = null;
+
+  /* ---------- build pages ---------- */
+  function el(tag, cls, parent){ var e = document.createElement(tag); if (cls) e.className = cls; if (parent) parent.appendChild(e); return e; }
+  PAGES.forEach(function(p, i){
+    var pg = el('div', 'page'); stage.insertBefore(pg, canvas);
+    var bk = el('div', 'bk', pg); bk.style.backgroundImage = 'url(' + p.img + ')';
+    var w = el('div', 'world', pg);
+    var im = el('img', 'pimg in', w); im.src = p.img; im.alt = ''; im.draggable = false;
+    if (p.bar > 0){
+      var pb = el('div', 'pbar in', w);
+      for (var k = 0; k < p.bar; k++){
+        var s = el('i', k === p.bar - 1 ? 'anim' : '', pb); s.style.left = (12 + k * 37.2) + 'px';
+      }
+      // share + close hotspots in the story header
+      addHot(w, {x:296, y:82, w:44, h:40, a:'share'}); addHot(w, {x:340, y:82, w:44, h:40, a:'close'});
+    }
+    (p.hot || []).forEach(function(h){ addHot(w, h); });
+    if (p.scenery) buildScenery(w);
+    pageEls.push(pg);
+  });
+  function addHot(parent, h){
+    var b = el('button', 'hot', parent); b.setAttribute('aria-label', h.a);
+    b.style.cssText = 'left:' + h.x + 'px;top:' + h.y + 'px;width:' + h.w + 'px;height:' + h.h + 'px';
+    b.dataset.a = h.a;
+  }
+
+  /* ---------- page 4: scenery strip ---------- */
+  function buildScenery(world){
+    var order = ['snow','autumn','sea','sunset','meadow','mountain','forest','lake'];
+    var SMALL = {w:213,h:150}, BIG = {w:263,h:172}, GAP = 5;
+    var rot = el('div', 'rot', world), strip = el('div', 'strip', rot);
+    var x = 0, centers = [], ci = order.indexOf('forest'), seed = 3;
+    function rnd(){ seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+    order.forEach(function(name, i){
+      var big = i === ci, d = big ? BIG : SMALL;
+      var c = el('div', 'card' + (big ? ' center' : ''), strip);
+      c.style.cssText = 'left:' + x + 'px;top:' + (-d.h / 2) + 'px;width:' + d.w + 'px;height:' + d.h + 'px';
+      var ph = el('i', '', c); ph.style.backgroundImage = 'url(img/s_' + name + '.jpg)';
+      if (!big){
+        var bars = '', n = 40;
+        for (var b = 0; b < n; b++){
+          var env = Math.sin(b / n * Math.PI), h = 5 + (0.35 + 0.65 * rnd()) * 44 * (0.35 + 0.65 * env);
+          bars += '<rect x="' + (b * 4.15) + '" y="' + (25 - h / 2) + '" width="2" height="' + h + '" rx="1" fill="#fff"/>';
+        }
+        c.insertAdjacentHTML('beforeend', '<svg viewBox="0 0 167 50">' + bars + '</svg>');
+      }
+      centers.push(x + d.w / 2); x += d.w + GAP;
+    });
+    // foreground cut-outs from the artwork (positions in px of the 390x844 design)
+    var fg = [
+      ['img/p04_furbo.png', 84, 510.5, 237, 333.5, ''],
+      ['img/p04_bubble.png', 271.5, 265.5, 118.5, 143.5, 'bobbing'],
+      ['img/p04_47.png', 118, 352.5, 124, 91.5, 'fg47'],
+      ['img/p04_times.png', 103, 450.5, 165, 41, 'fg47 t2']
+    ];
+    fg.forEach(function(f){
+      var im = el('img', 'layer ' + f[5], world); im.src = f[0]; im.alt = ''; im.draggable = false;
+      im.style.cssText = 'left:' + f[1] + 'px;top:' + f[2] + 'px;width:' + f[3] + 'px;height:' + f[4] + 'px';
+    });
+    // the next-arrow button on this page lives inside the Furbo cut-out; hotspot added by the generic page hot
+    scn = {world:world, strip:strip, centers:centers, ci:ci, timers:[]};
+    resetScenery();
+  }
+  function resetScenery(){
+    if (!scn) return;
+    scn.timers.forEach(clearTimeout); scn.timers = [];
+    scn.world.classList.remove('landed');
+    scn.strip.style.transition = 'none';
+    scn.strip.style.transform = 'translateX(' + (-scn.centers[0]) + 'px)';
+    void scn.strip.offsetWidth;
+  }
+  function playScenery(){
+    if (!scn) return;
+    resetScenery();
+    scn.timers.push(setTimeout(function(){
+      scn.strip.style.transition = 'transform 2.5s cubic-bezier(.1,.78,.16,1)';
+      scn.strip.style.transform = 'translateX(' + (-scn.centers[scn.ci]) + 'px)';
+    }, 500));
+    scn.timers.push(setTimeout(function(){ scn.world.classList.add('landed'); }, 500 + 2100));
+  }
+
+  /* ---------- fit ---------- */
+  function fit(){
+    var vw = document.documentElement.clientWidth || window.innerWidth;
+    var coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    mobile = vw <= 480 || (coarse && Math.min(window.innerWidth, window.innerHeight) <= 480);
+    document.body.classList.toggle('mobile', mobile);
+    var vh = mobile ? (document.body.getBoundingClientRect().height || window.innerHeight) : window.innerHeight;
+    var s, Hd, Wd, wt, wl;
+    if (mobile){
+      var U = 44, H0 = 800;             // status bar of the artwork is cropped out
+      s = vw / 390; Hd = vh / s;
+      if (Hd < 860){ s = vh / H0; Hd = H0; }   // fit the height (sides get a blurred fill or a few px crop)
+      Wd = vw / s;
+      wl = (Wd - 390) / 2; wt = -U + (Hd - H0) / 2;
+      phone.style.width = vw + 'px'; phone.style.height = vh + 'px';
+    } else {
+      s = Math.min((vh - 70) / 844, 1.3); Hd = 844; Wd = 390; wl = 0; wt = 0;
+      phone.style.width = (390 * s) + 'px'; phone.style.height = (844 * s) + 'px';
+    }
+    SW = Wd; SH = Hd;
+    stage.style.width = Wd + 'px'; stage.style.height = Hd + 'px'; stage.style.transform = 'scale(' + s + ')';
+    stage.style.setProperty('--wl', wl + 'px'); stage.style.setProperty('--wt', wt + 'px');
+    pageEls.forEach(function(p){ p.style.setProperty('--wl', wl + 'px'); p.style.setProperty('--wt', wt + 'px'); });
+    var dpr = 2; canvas.width = Wd * dpr; canvas.height = Hd * dpr; canvas.style.width = Wd + 'px'; canvas.style.height = Hd + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  /* ---------- liquid transition ---------- */
+  var B = 1.75, DUR = 1150;
+  function wave(v, t, ph){
+    return 0.05 * Math.sin(v * 0.014 + ph + t * 6) + 0.028 * Math.sin(v * 0.027 - ph * 1.7 - t * 8);
+  }
+  function drawBand(F, t, dir, front, tail, ph, fill, stroke){
+    var ang = 16 * Math.PI / 180;
+    var ux = -dir * Math.cos(ang), uy = -Math.sin(ang);   // motion direction
+    var px = -uy, py = ux;                                // perpendicular
+    var cx = SW / 2, cy = SH / 2, L = Math.abs(SW * ux) + Math.abs(SH * uy);
+    var vmax = Math.sqrt(SW * SW + SH * SH) / 2 + 20, step = 10, i, v, a, pts = [], tl = [];
+    for (v = -vmax; v <= vmax; v += step){
+      a = F + front + wave(v, t, ph);
+      pts.push([cx + (a - 0.5) * L * ux + v * px, cy + (a - 0.5) * L * uy + v * py]);
+    }
+    for (v = vmax; v >= -vmax; v -= step){
+      a = F - B + tail + wave(v, t, ph + 2.3);
+      tl.push([cx + (a - 0.5) * L * ux + v * px, cy + (a - 0.5) * L * uy + v * py]);
+    }
+    ctx.beginPath();
+    ctx.moveTo(pts[0][0], pts[0][1]);
+    for (i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+    for (i = 0; i < tl.length; i++) ctx.lineTo(tl[i][0], tl[i][1]);
+    ctx.closePath(); ctx.fillStyle = fill; ctx.fill();
+    if (stroke){
+      ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+      for (i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+      ctx.strokeStyle = stroke; ctx.lineWidth = 3; ctx.lineJoin = 'round'; ctx.stroke();
+    }
+  }
+  function paint(t, dir){
+    var F = -0.12 + t * (B + 1.12 + 0.12 + 1.0);   // front travels until the tail has left the screen
+    ctx.clearRect(0, 0, SW, SH);
+    drawBand(F, t, dir, 0, 0, 0, '#fff2bf');                      // pale outer edge
+    drawBand(F, t, dir, -0.075, 0.075, 1.3, '#f9d24a');           // brand yellow body
+    drawBand(F, t, dir, -0.16, 0.16, 2.6, '#f7cd3d', 'rgba(255,255,255,.65)');
+    return F;
+  }
+  function liquid(dir, onCovered, onDone){
+    var t0 = null, swapped = false;
+    function frame(ts){
+      if (t0 === null) t0 = ts;
+      var t = Math.min((ts - t0) / DUR, 1);
+      var F = paint(t, dir);
+      if (!swapped && F >= 1.38){ swapped = true; onCovered(); }
+      if (t < 1) requestAnimationFrame(frame);
+      else { ctx.clearRect(0, 0, SW, SH); onDone(); }
+    }
+    requestAnimationFrame(frame);
+  }
+  window.__paint = paint;
+
+  /* ---------- navigation ---------- */
+  function show(n){
+    if (cur >= 0) pageEls[cur].classList.remove('active');
+    cur = n; pageEls[n].classList.add('active');
+    // restart entry animations
+    var w = pageEls[n].querySelector('.world'); var imgs = w.querySelectorAll('.in');
+    for (var i = 0; i < imgs.length; i++){ imgs[i].style.animation = 'none'; void imgs[i].offsetWidth; imgs[i].style.animation = ''; }
+    var an = w.querySelectorAll('.pbar i.anim');
+    for (i = 0; i < an.length; i++){ an[i].style.animation = 'none'; void an[i].offsetWidth; an[i].style.animation = ''; }
+    prevB.disabled = cur === 0; nextB.disabled = cur === N - 1;
+    try { history.replaceState(null, '', '#' + (PAGES[cur].n)); } catch(e){}
+    if (PAGES[cur].scenery) playScenery(); else resetScenery();
+  }
+  function go(n, dir){
+    if (n < 0 || n >= N || n === cur || busy) return;
+    dir = dir || (n > cur ? 1 : -1);
+    if (cur < 0){ show(n); return; }
+    busy = true;
+    liquid(dir, function(){ show(n); }, function(){ busy = false; });
+  }
+  function next(){ go(cur + 1, 1); }
+  function prev(){ go(cur - 1, -1); }
+  function say(msg){ toast.textContent = msg; toast.classList.add('on'); setTimeout(function(){ toast.classList.remove('on'); }, 1600); }
+
+  prevB.addEventListener('click', prev); nextB.addEventListener('click', next);
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') next();
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') prev();
+  });
+  stage.addEventListener('click', function(e){
+    var hot = e.target.closest && e.target.closest('.hot');
+    if (hot){
+      e.stopPropagation();
+      var a = hot.dataset.a;
+      if (a === 'share') say('Share (prototype)');
+      else if (a === 'close') say('Close (prototype)');
+      else if (a === 'replay') go(0, 1);
+      else next();
+      return;
+    }
+    var r = stage.getBoundingClientRect();
+    if (e.clientX - r.left < r.width / 2) prev(); else next();
+  });
+  var sx, sy;
+  stage.addEventListener('touchstart', function(e){ sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, {passive:true});
+  stage.addEventListener('touchend', function(e){
+    var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)){ dx < 0 ? next() : prev(); e.preventDefault(); }
+    else if (dy < -60 && PAGES[cur] && PAGES[cur].swipeUp){ next(); e.preventDefault(); }
+  });
+  ['gesturestart','gesturechange','gestureend'].forEach(function(ev){ document.addEventListener(ev, function(e){ e.preventDefault(); }); });
+  window.addEventListener('resize', fit);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', function(){ setTimeout(fit, 250); });
+  fit();
+  var hn = parseInt((location.hash || '').slice(1), 10), start = 0;
+  PAGES.forEach(function(p, i){ if (p.n === hn) start = i; });
+  go(start, 1);
+  window.__go = function(i){ busy = false; go(i); };
+  window.__dbg = function(){ return {scn:!!scn, cur:cur, centers:scn&&scn.centers, ci:scn&&scn.ci, t:scn&&scn.timers.length}; };
+})();
+</script>
+</body>
+</html>
