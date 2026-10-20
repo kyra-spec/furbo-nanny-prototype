@@ -1674,7 +1674,15 @@
     if (+pg.dataset.bar > 0){ addHot(root, {x:296,y:82,w:44,h:40,a:'share'}); addHot(root, {x:340,y:82,w:44,h:40,a:'close'}); }
   });
 
+  function fitShare(){   // exact 390x844 card at the top-left, independent of the window (used to render share.jpg)
+    phone.style.cssText = 'position:absolute;left:0;top:0;width:390px;height:844px;border-radius:0;box-shadow:none';
+    stage.style.width = '390px'; stage.style.height = '844px'; stage.style.transform = 'none';
+    stage.style.setProperty('--wl', '0px'); stage.style.setProperty('--wt', '0px');
+    pages.forEach(function(p){ p.style.setProperty('--wl', '0px'); p.style.setProperty('--wt', '0px'); p.style.setProperty('--vd', 0); });
+    S = 1;
+  }
   function fit(){
+    if (document.body.classList.contains('sharemode')) return fitShare();
     var vw = document.documentElement.clientWidth || window.innerWidth;
     var coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
     var mobile = vw <= 480 || (coarse && Math.min(window.innerWidth, window.innerHeight) <= 480);
@@ -1686,6 +1694,7 @@
       // fill the screen WIDTH (no inset); adapt the height by squeezing / stretching the gaps between elements
       var U = 44, H0 = 800, MAXD = 40, MAXE = 150, wt0;
       s = vw / 390; Hd = vh / s; var d = H0 - Hd;
+      if (document.body.classList.contains('sharemode')){ return fitShare(); }
       if (d > MAXD){ s = vh / (H0 - MAXD); Hd = H0 - MAXD; d = MAXD; }   // very short screens: shrink a little instead
       var extra = 0; if (-d > MAXE){ extra = -d - MAXE; d = -MAXE; }
       Wd = vw / s; vd = d; wt0 = -U + extra / 2;
@@ -1845,8 +1854,16 @@
   }
   function next(){ go(cur + 1, 1); }
   function prev(){ go(cur - 1, -1); }
-  function share(){   // native share sheet (iOS / Android); falls back to copying the link
+  var shareFile = null;
+  try {   // preload the result card image so the share sheet can open instantly (needs the click gesture)
+    fetch('share.jpg').then(function(r){ return r.blob(); }).then(function(b){
+      var f = new File([b], 'furbo-2026-wrapped.jpg', {type: 'image/jpeg'});
+      if (!navigator.canShare || navigator.canShare({files: [f]})) shareFile = f;
+    }).catch(function(){});
+  } catch(e){}
+  function share(){   // native share sheet (iOS / Android): link + result image; falls back to copying the link
     var data = {title: 'Furbo 2026 Wrapped', text: 'Archie & Teddy\u2019s 2026 Wrapped, wrapped by Nanny.', url: location.origin + location.pathname};
+    if (shareFile) data.files = [shareFile];
     if (navigator.share){ navigator.share(data).catch(function(){}); return; }
     var done = function(){ say('Link copied'); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(data.url).then(done, function(){ say('Share (prototype)'); });
@@ -1881,6 +1898,13 @@
   if (window.visualViewport) window.visualViewport.addEventListener('resize', fit);
   window.addEventListener('orientationchange', function(){ setTimeout(fit, 250); });
   if (/[?&]static/.test(location.search)){ var st = document.createElement('style'); st.textContent = '.page .fx,.page .blob{opacity:1!important;animation:none!important;translate:none!important;scale:none!important;rotate:none!important}.pb i.a::after{transform:scaleX(1)!important;animation:none!important}.page.out{display:none!important}'; document.head.appendChild(st); }
+  if (/[?&]share/.test(location.search)){
+    document.body.classList.add('sharemode');
+    var sm = document.createElement('style');
+    sm.textContent = '*{animation:none!important;transition:none!important}.page .fx,.page .blob{opacity:1!important;translate:none!important;scale:none!important;rotate:none!important}.nav,.hint,.toast,.ghdr,.gbar,.hot{display:none!important}.phone{box-shadow:none!important;border-radius:0!important}body.sharemode{display:block!important;overflow:visible!important;background:#fff!important}.app{position:static!important;display:block!important}';
+    document.head.appendChild(sm);
+    [].forEach.call(document.querySelectorAll('#pg12 .vs'), function(w){ var t = (w.textContent || '').trim(); if (t === 'Share' || t === 'Replay') w.style.visibility = 'hidden'; });
+  }
   fit(); choreo();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ choreo(); });
   var hn = parseInt((location.hash || '').slice(1), 10), start = 0;
