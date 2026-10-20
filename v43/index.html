@@ -224,7 +224,7 @@ img { display: block; }
 .navbar::after { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
   background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.15) 40%, rgba(255,255,255,0.1) 60%, rgba(255,255,255,0.7));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
-.nav-item { position: relative; z-index: 1; width: 56px; height: 38px; flex: none; border-radius: 19px; display: flex; align-items: center; justify-content: center;
+.nav-item { position: relative; z-index: 1; width: auto; height: 38px; flex: 1 1 0; border-radius: 19px; display: flex; align-items: center; justify-content: center;
   color: #3A3A3A; filter: drop-shadow(0 0 5px rgba(255,255,255,0.75)); }
 .nav-item svg { width: 24px; height: 24px; }
 /* the home glyph is a solid shape that fills its whole box; shrink it so it reads the same size as the outlined icons */
@@ -235,7 +235,10 @@ img { display: block; }
   background: rgba(60,60,67,0.13); box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.35);
   transition: transform .32s cubic-bezier(.3,1.25,.5,1); }
 .screen.search-kb .navbar, .screen.player-open .navbar { opacity: 0; pointer-events: none; transform: translateY(20px); }
-.nav-nanny { position: relative; width: 86px; }
+.nav-nanny { position: relative; flex-grow: 1.54; min-width: 0; transition: flex-grow .32s cubic-bezier(.3,.9,.4,1), opacity .2s ease; }
+.nav-nanny .face { transition: transform .32s cubic-bezier(.3,.9,.4,1); }
+.screen.off-home .nav-nanny { flex-grow: 0; opacity: 0; pointer-events: none; }
+.screen.off-home .nav-nanny .face { transform: scale(0); }
 .nav-nanny .face { width: 42px; height: 42px; margin-top: 0; border-radius: 50%; overflow: hidden; position: relative;
   box-shadow: 0 0 0 1.5px rgba(255,255,255,0.9), 0 0 12px rgba(120,150,245,0.7), 0 2px 10px rgba(247,205,61,0.35); }
 .nav-nanny .face img { position: absolute; left: -11%; top: -11%; width: 122%; height: 122%; max-width: none; }
@@ -472,7 +475,7 @@ img { display: block; }
 .v-d2 .bubble.ai.can-toggle .bchev, .v-d3 .bubble.ai.can-toggle .bchev { display: flex; }
 .bubble.ai.open .bchev { transform: rotate(180deg); }
 /* D-2: Nanny sits on the bubble's top-left corner */
-.v-d2 .bubble.ai { padding-left: 28px; }
+.v-d2 .bubble.ai { padding-left: 12px; }
 .v-d2 .bubble.ai .av { position: absolute; left: -6px; top: -5px; width: 30px; height: 30px; margin: 0; }
 /* D-3: Nanny beside the bubble, bubble indented */
 .v-d3 .bubble-wrap.ai-row { flex-direction: row; align-items: flex-start; gap: 8px; }
@@ -1011,7 +1014,7 @@ function renderItem(it) {
     case 'ai':
       if (!it.mid) it.mid = 'm' + (++msgSeq);
       {
-        const av = '<img class="av" src="assets/d/nanny_avatar.png" alt="Nanny">';
+        const av = '';   // no avatar on the bubbles
         const text = '<div class="btext" data-mid="' + it.mid + '">' + formatBubble(it.text) + '</div>';
         const chev = BUBBLE_STYLE === 'd1' ? '' : '<span class="bchev" aria-hidden="true">' + BCHEV + '</span>';
         if (BUBBLE_STYLE === 'd3') return '<div class="bubble-wrap ai-row">' + av + '<div class="bubble ai" data-bmid="' + it.mid + '">' + text + chev + '</div></div>';
@@ -1217,7 +1220,7 @@ function renderTabBar() {
 const PAGE_TINT = { home: '#FFFEFB', video: '#FFFFFF', report: '#FBF9F5', menu: '#F5F5F5' };
 function moveNavIndicator() {
   const btn = document.querySelector('.nav-item[data-tab="' + currentTab + '"]');
-  if (btn) document.getElementById('nav-ind').style.transform = 'translateX(' + (btn.offsetLeft - 4) + 'px)';
+  if (btn) { const ind = document.getElementById('nav-ind'); ind.style.width = btn.offsetWidth + 'px'; ind.style.transform = 'translateX(' + (btn.offsetLeft - 4) + 'px)'; }
 }
 const lastScrollY = new WeakMap();
 function setNavMini(on) { $screen.classList.toggle('nav-mini', on); }
@@ -1247,6 +1250,8 @@ function setTab(tab) {
   if (tab === 'report') document.getElementById('page-report').scrollTop = 0;
   if (tab === 'menu') { document.getElementById('page-menu').scrollTop = 0; document.querySelector('.menu-head').classList.remove('scrolled'); }
   syncLiveVideo();
+  $screen.classList.toggle('off-home', tab !== 'home');
+  moveNavIndicator(); setTimeout(moveNavIndicator, 340);   // follow the tabs while the Nanny slot folds / unfolds
 }
 // ─── "Ask me!" bubble ────────────────────────────────────────────────────────
 // While Home is showing: 2s after arriving the bubble pops up for 3s, then every 4s on Home it pops up again.
