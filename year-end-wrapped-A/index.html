@@ -1691,6 +1691,13 @@
   }
   function next(){ go(cur + 1, 1); }
   function prev(){ go(cur - 1, -1); }
+  function share(){   // native share sheet (iOS / Android); falls back to copying the link
+    var data = {title: 'Furbo 2026 Wrapped', text: 'Archie & Teddy\u2019s 2026 Wrapped, wrapped by Nanny.', url: location.origin + location.pathname};
+    if (navigator.share){ navigator.share(data).catch(function(){}); return; }
+    var done = function(){ say('Link copied'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(data.url).then(done, function(){ say('Share (prototype)'); });
+    else say('Share (prototype)');
+  }
   function say(msg){ toast.textContent = msg; toast.classList.add('on'); setTimeout(function(){ toast.classList.remove('on'); }, 1600); }
 
   prevB.addEventListener('click', prev); nextB.addEventListener('click', next);
@@ -1701,7 +1708,7 @@
     var hot = e.target.closest && e.target.closest('.hot');
     if (hot){
       e.stopPropagation(); var a = hot.dataset.a;
-      if (a === 'share') say('Share (prototype)'); else if (a === 'close') say('Close (prototype)');
+      if (a === 'share') share(); else if (a === 'close') say('Close (prototype)');
       else if (a === 'replay') go(0, 1); else next();
       return;
     }
