@@ -2,9 +2,13 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
+<meta name="theme-color" content="#6d79e4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>C_Year end wrapped_1023</title>
-<link rel="stylesheet" href="style.css?v=b814b9bd">
+<link rel="stylesheet" href="style.css?v=2f945d0c">
 </head>
 <body>
 <div class="app">
@@ -370,6 +374,7 @@
     10: [{x:60,y:702,w:270,h:48,a:'share'},{x:150,y:760,w:90,h:36,a:'replay'}]
   };
 
+  var THEME = {1:['#6ca3fc','#fce7e2'],2:['#6d79e4','#7999ea'],3:['#6d79e4','#7999ea'],4:['#6d79e4','#7999ea'],5:['#6273e3','#7798ea'],6:['#6072e3','#7293e8'],7:['#6d79e4','#7f9deb'],8:['#6976e3','#7092e8'],9:['#b9a7fa','#7083e4'],10:['#f27aa6','#f9cbde']};
   var stage = document.getElementById('stage'), phone = document.getElementById('phone');
   var prevB = document.getElementById('prev'), nextB = document.getElementById('next'), toast = document.getElementById('toast');
   var pages = Array.prototype.slice.call(document.querySelectorAll('.page'));
@@ -623,6 +628,10 @@
     if (old){ setTimeout(function(){ odoReset(old); }, 600); }
     if (!old) stage.style.transition = 'none';
     stage.style.setProperty('--sbg', pg.dataset.bg);
+    var th = THEME[pg.dataset.n]; if (th){   // tint the browser's own bars (status / toolbar) with the page colours
+      var tm = document.querySelector('meta[name="theme-color"]'); if (tm) tm.setAttribute('content', th[0]);
+      document.documentElement.style.background = 'linear-gradient(' + th[0] + ',' + th[1] + ')';
+    }
     var nb = +pg.dataset.bar, gb = document.getElementById('gbar'), segs = gb.children;
     document.getElementById('ghdr').classList.toggle('on', nb > 0);
     gb.classList.toggle('on', nb > 0);
