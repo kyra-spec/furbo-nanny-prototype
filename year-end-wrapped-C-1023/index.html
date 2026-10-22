@@ -410,7 +410,7 @@
     var vd = 0;
     if (mobile){
       // fill the screen WIDTH (no inset); adapt the height by squeezing / stretching the gaps between elements
-      var U = 44, H0 = 800, MAXD = (window.__dpMin != null ? window.__dpMin : 60), MAXE = 150, wt0, sy = 1;
+      var U = 54, H0 = 790, MAXD = (window.__dpMin != null ? window.__dpMin : 60), MAXE = 150, wt0, sy = 1;
       s = Math.max(vw / 390, vh / H0); Hd = vh / s; var d = H0 - Hd;   // tall phones: zoom a hair so the artwork always reaches the bottom edge (a few px of the sides get cropped)
       if (document.body.classList.contains('sharemode')){ return fitShare(); }
       if (d > MAXD){ s = vh / (H0 - MAXD); Hd = H0 - MAXD; d = MAXD; }   // very short screens: shrink uniformly (never squash)
@@ -424,6 +424,7 @@
     stage.style.width = Wd + 'px'; stage.style.height = Hd + 'px'; stage.style.transform = 'scale(' + s + ')';
     stage.style.setProperty('--wl', window.__wl0 + 'px'); stage.style.setProperty('--wt', window.__wt0 + 'px');
     pages.forEach(function(p){ p.style.setProperty('--wl', window.__wl0 + 'px'); p.style.setProperty('--wt', window.__wt0 + 'px'); p.style.setProperty('--vd', vd); });
+    var cp = pages[0] && pages[0].querySelector('.bgplate'); if (cp && cp.parentNode) cp.parentNode.style.setProperty('--vf', vd > 0 ? .5 : 0);
   }
 
   // every leaf element floats in on its own: measure it, then pick direction / distance / delay from what it is
@@ -439,6 +440,8 @@
       });
       info.forEach(function(o){ var tx = (o.e.textContent || '').trim(); if (/^(Share|Let.s relive it)$/.test(tx)) o.e.classList.add('cta'); });
       if (pg.dataset.n === '4') info.forEach(function(b){ if (/^(Busiest day|Jan)/.test((b.e.textContent || '').trim())) b.e.parentNode.style.setProperty('--ny', 14); });
+      { var yh = 120; info.forEach(function(o){ if (o.e.classList.contains('hl') || o.e.classList.contains('pill')) yh = Math.max(yh, o.cy + o.h / 2); });
+        info.forEach(function(o){ if ((o.e.classList.contains('hl') || o.e.classList.contains('pill')) && o.cy >= 125 && o.cy <= yh) o.e.parentNode.style.setProperty('--ny', -16); }); }   // phone: the title block tucks up under the header
       var main = [], hdr = [], stars = [], arrow = null;
       var bigs = info.filter(function(b){ return b.img && b.area > 20000; });
       function insideBig(o){ return bigs.some(function(b){ return b !== o && Math.abs(o.cx - b.cx) < b.w / 2 && Math.abs(o.cy - b.cy) < b.h / 2; }); }
@@ -560,7 +563,7 @@
     });
     var dm = 120; pages.forEach(function(pg){ if (pg._allow != null) dm = Math.min(dm, pg._allow); });
     window.__allow = pages.map(function(pg){ return pg._allow + ' ' + (pg._why || ''); });
-    dm = Math.max(dm, 45);   // never shrink the artwork more than this; below that the layout has no real room left
+    dm = Math.max(dm, 70);   // never shrink the artwork more than this; below that the layout has no real room left
     if (window.__dpMin !== dm){ window.__dpMin = dm; fit(); }
   }
   /* ---------- odometers: digits roll like reels, then hop ---------- */
