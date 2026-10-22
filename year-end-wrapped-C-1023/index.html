@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>C_Year end wrapped_1023</title>
-<link rel="stylesheet" href="style.css?v=2f945d0c">
+<link rel="stylesheet" href="style.css?v=9d536108">
 </head>
 <body>
 <div class="app">
@@ -61,7 +61,7 @@
 <g id="s5x2-Ellipse 391" filter="url(#s5x2-filter0_f_0_255)">
 <circle cx="48.0921" cy="48.0921" r="24.045" transform="rotate(6.30817 48.0921 48.0921)" fill="white"></circle>
 </g>
-<foreignObject x="12.173" y="15.9035" width="75.7425" height="75.7425"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(6.04px);clip-path:url(#s5x2-bgblur_0_0_255_clip_path);height:100%;width:100%"></div></foreignObject><g id="s5x2-Union" filter="url(#s5x2-filter1_dii_0_255)" data-figma-bg-blur-radius="12.0842">
+<g id="s5x2-Union" filter="url(#s5x2-filter1_dii_0_255)" data-figma-bg-blur-radius="12.0842">
 <path d="M50.0443 28.888C38.0926 28.888 28.4039 38.577 28.4037 50.5286C28.4037 62.4804 38.0925 72.1693 50.0443 72.1693C61.9961 72.1692 71.6849 62.4804 71.6849 50.5286C71.6847 38.577 61.9959 28.888 50.0443 28.888Z" fill="white" fill-opacity="0.7" shape-rendering="crispEdges"></path>
 </g>
 <g id="s5x2-Icon/Features/Diary" clip-path="url(#s5x2-clip1_0_255)">
@@ -120,7 +120,7 @@
 <g id="s5x3-Ellipse 391" opacity="0.5" filter="url(#s5x3-filter0_f_0_239)">
 <ellipse cx="56.783" cy="53.7012" rx="32.5" ry="29.5" transform="rotate(9.68689 56.783 53.7012)" fill="white"></ellipse>
 </g>
-<foreignObject x="0" y="-2.38419e-07" width="115.718" height="115.718"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(9.23px);clip-path:url(#s5x3-bgblur_0_0_239_clip_path);height:100%;width:100%"></div></foreignObject><g id="s5x3-Union" filter="url(#s5x3-filter1_dii_0_239)" data-figma-bg-blur-radius="18.4621">
+<g id="s5x3-Union" filter="url(#s5x3-filter1_dii_0_239)" data-figma-bg-blur-radius="18.4621">
 <path d="M57.8594 19.8375C39.5998 19.8375 24.7971 34.6395 24.7969 52.899C24.7969 71.1588 39.5997 85.9615 57.8594 85.9615C76.119 85.9613 90.9209 71.1587 90.9209 52.899C90.9207 34.6396 76.1188 19.8378 57.8594 19.8375Z" fill="white" fill-opacity="0.7" shape-rendering="crispEdges"></path>
 </g>
 <g id="s5x3-Icon/Navigation/Videos" clip-path="url(#s5x3-clip1_0_239)">
@@ -189,7 +189,7 @@
 <g id="s5x4-Ellipse 391" filter="url(#s5x4-filter0_f_0_219)">
 <ellipse cx="55.2887" cy="48.7711" rx="26" ry="26.5" transform="rotate(9.68689 55.2887 48.7711)" fill="white"></ellipse>
 </g>
-<foreignObject x="0" y="4.76837e-07" width="110.97" height="110.97"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(10.71px);clip-path:url(#s5x4-bgblur_0_0_219_clip_path);height:100%;width:100%"></div></foreignObject><g id="s5x4-Union" filter="url(#s5x4-filter1_dii_0_219)" data-figma-bg-blur-radius="21.4257">
+<g id="s5x4-Union" filter="url(#s5x4-filter1_dii_0_219)" data-figma-bg-blur-radius="21.4257">
 <path d="M55.4844 23.0219C40.7344 23.0221 28.7774 34.9799 28.7774 49.7299C28.7775 64.4799 40.7345 76.4368 55.4844 76.437C70.2346 76.437 82.1924 64.48 82.1925 49.7299C82.1925 34.9798 70.2346 23.0219 55.4844 23.0219Z" fill="white" fill-opacity="0.7" shape-rendering="crispEdges"></path>
 </g>
 <g id="s5x4-Icon/Features/Alert" clip-path="url(#s5x4-clip1_0_219)">
@@ -403,6 +403,7 @@
     pages.forEach(function(p){ p.style.setProperty('--wl', '100px'); p.style.setProperty('--wt', '0px'); p.style.setProperty('--vd', 0); });
     S = 1; SY = 1;
   }
+  function plateVf(){ var cp = pages[0] && pages[0].querySelector('.bgplate'); if (cp && cp.parentNode) cp.parentNode.style.setProperty('--vf', (window.__vd > 0) ? (pages[0]._plateF != null ? pages[0]._plateF : .6) : 0); }
   function fit(){
     if (document.body.classList.contains('bakemode')) return fitBake();
     if (document.body.classList.contains('sharemode')) return fitShare();
@@ -429,7 +430,7 @@
     stage.style.width = Wd + 'px'; stage.style.height = Hd + 'px'; stage.style.transform = 'scale(' + s + ')';
     stage.style.setProperty('--wl', window.__wl0 + 'px'); stage.style.setProperty('--wt', window.__wt0 + 'px');
     pages.forEach(function(p){ p.style.setProperty('--wl', window.__wl0 + 'px'); p.style.setProperty('--wt', window.__wt0 + 'px'); p.style.setProperty('--vd', vd); });
-    var cp = pages[0] && pages[0].querySelector('.bgplate'); if (cp && cp.parentNode) cp.parentNode.style.setProperty('--vf', vd > 0 ? .5 : 0);
+    window.__vd = vd; plateVf();
   }
 
   // every leaf element floats in on its own: measure it, then pick direction / distance / delay from what it is
@@ -525,7 +526,7 @@
       });
       // vertical spacing factor per wrapper (children are relative to their parent wrapper)
       var cyOf = function(e){ var u = e.dataset && e.dataset.unit; if (u) return +e.dataset.cy; var r = e.getBoundingClientRect(); return (r.top - rr.top) / SY + r.height / SY / 2; };
-      var y0 = 120; info.forEach(function(o){ if (o.e.classList.contains('hl') || o.e.classList.contains('pill')) y0 = Math.max(y0, o.cy + o.h / 2); }); y0 = Math.min(y0, 340);   // nothing at or above the headline moves
+      var y0 = 120; info.forEach(function(o){ if ((o.e.classList.contains('hl') || o.e.classList.contains('pill')) && o.cy < 340) y0 = Math.max(y0, o.cy + o.h / 2); }); y0 = Math.min(y0, 340);   // nothing at or above the headline moves
       var fOf = function(e){ return Math.max(0, Math.min(1, (cyOf(e) - y0) / (790 - y0))); };
       var ctaEl = pg.querySelector('.fx.cta') || [].slice.call(pg.querySelectorAll('.fx')).filter(function(e){ return /^Share$/.test((e.textContent || '').trim()) && !e.querySelector('.fx'); })[0];
       var ctaF = null;
@@ -538,10 +539,19 @@
           if (r.bottom <= ct + 8 * SY && r.bottom > ct - 170 * SY) ctaF = Math.max(ctaF === null ? 0 : ctaF, Math.max(0, Math.min(1, ((e.dataset.unit ? +e.dataset.cy : (r.top - rr.top) / SY + r.height / SY / 2) + (e.dataset.unit ? +e.dataset.h : r.height / SY) / 2 - 120) / 670)));
         });
       }
+      var fGroup = new Map();   // text lines (and a text line with the one below it) that are close together keep their gap: same shift
+      (function(){
+        var tx = info.filter(function(o){ return o.text && !o.e.classList.contains('cta') && !o.e.querySelector('.odo') && !o.e.classList.contains('late'); }).sort(function(a, b){ return a.cy - b.cy; });
+        var grp = [], cur = [];
+        tx.forEach(function(o, i){ var prev = tx[i - 1]; if (prev && (o.cy - o.h / 2) - (prev.cy + prev.h / 2) < 30 && Math.abs(o.cx - prev.cx) < 140){ cur.push(o); } else { if (cur.length > 1) grp.push(cur); cur = [o]; } });
+        if (cur.length > 1) grp.push(cur);
+        grp.forEach(function(g){ var av = g.reduce(function(m, o){ return m + fOf(o.e); }, 0) / g.length; g.forEach(function(o, k){ fGroup.set(o.e, Math.max(0, Math.min(1, av + (g.length - 1 - 2 * k) * .04))); }); });
+      })();
+      if (pg.dataset.n === '1'){ var sub = info.filter(function(o){ return /^A whole year/.test((o.e.textContent || '').trim()); })[0]; if (sub) pg._plateF = .5; }
       var fCta = ctaEl ? (ctaF !== null ? Math.min(fOf(ctaEl), ctaF) : fOf(ctaEl)) : null;
       var repEl = [].slice.call(pg.querySelectorAll('.fx')).filter(function(e){ return /^Replay$/.test((e.textContent || '').trim()) && !e.querySelector('.fx'); })[0];
       [].forEach.call(pg.querySelectorAll('.vs'), function(w){
-        var e = w.firstElementChild, f = e.classList.contains('blob') ? 0 : (ctaEl && (e === ctaEl || ctaEl.contains(e) || e === repEl)) ? fCta : fOf(e), pw = w.parentElement.closest('.vs'), pf = pw ? +pw.dataset.f : 0;
+        var e = w.firstElementChild, f = e.classList.contains('blob') ? 0 : (ctaEl && (e === ctaEl || ctaEl.contains(e) || e === repEl)) ? fCta : (fGroup.has(e) ? fGroup.get(e) : fOf(e)), pw = w.parentElement.closest('.vs'), pf = pw ? +pw.dataset.f : 0;
         w.dataset.f = f; w.style.setProperty('--vf', (f - pf).toFixed(4));
       });
       // how much vertical squeeze can this page take before objects start to touch each other (design px)? computed purely from the design boxes
@@ -566,6 +576,7 @@
       pg.style.setProperty('--vd', vd0 || 0);
       pg.style.display = ''; pg.style.visibility = '';
     });
+    plateVf();
     var dm = 120; pages.forEach(function(pg){ if (pg._allow != null) dm = Math.min(dm, pg._allow); });
     window.__allow = pages.map(function(pg){ return pg._allow + ' ' + (pg._why || ''); });
     dm = Math.max(dm, 70);   // never shrink the artwork more than this; below that the layout has no real room left
@@ -710,6 +721,7 @@
     document.head.appendChild(sm);
     [].forEach.call(document.querySelectorAll('#pg10 .vs'), function(w){ var t = (w.textContent || '').trim(); if (t === 'Share' || t === 'Replay') w.style.visibility = 'hidden'; });
   }
+  setTimeout(function(){ [].forEach.call(document.images, function(im){ if (im.decode) im.decode().catch(function(){}); }); }, 250);   // decode every picture up front so the first animation of a page never waits on it
   fit(); choreo();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ choreo(); });
   var hn = parseInt((location.hash || '').slice(1), 10), start = 0;
