@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>A_Year end wrapped_1023</title>
-<link rel="stylesheet" href="style.css?v=fa6ceac9">
+<link rel="stylesheet" href="style.css?v=5edcb69a">
 </head>
 <body>
 <div class="app">
@@ -825,7 +825,7 @@
     var vd = 0;
     if (mobile){
       // fill the screen WIDTH (no inset); adapt the height by squeezing / stretching the gaps between elements
-      var U = 44, H0 = 800, MAXD = 60, MAXE = 150, wt0, sy = 1;
+      var U = 44, H0 = 800, MAXD = 0, MAXE = 150, wt0, sy = 1;
       s = vw / 390; Hd = vh / s; var d = H0 - Hd;
       if (document.body.classList.contains('sharemode')){ return fitShare(); }
       if (d > MAXD){   // short screens: keep the width filled, squash the height slightly (never leave side padding)
@@ -845,6 +845,24 @@
   }
 
   // every leaf element floats in on its own: measure it, then pick direction / distance / delay from what it is
+  var NUDGE = {
+    '4': function(b){ return /^(Busiest day|Jan 17)/.test((b.e.textContent || '').trim()) ? 12 : 0; },
+    '7': function(b, id){
+      if (/^18265:2207[678]$/.test(id)) return 14;
+      if (b.cy < 130 || (b.text && b.cy < 260 && b.cy > 190) || b.cy === 142) return -8;
+      if (b.e.textContent.trim() === 'Share') return 0;
+      if (b.cy < 130) return -8;
+      if (b.cy >= 290 && b.cy < 460) return 4;
+      if (b.cy >= 460 && b.cy < 650) return 6;
+      return 0;
+    },
+    '8': function(b){
+      var t = (b.e.textContent || '').trim();
+      if (/^These 2/.test(t)) return -4;
+      if (b.cy > 280 && b.cy < 500 && !b.text) return 10;
+      return 0;
+    }
+  };
   function choreo(){
     pages.forEach(function(pg){
       pg.style.display = 'block'; pg.style.visibility = 'hidden';
@@ -855,6 +873,9 @@
         info.push({e:e, w:w, h:h, cx:u ? +e.dataset.cx : (r.left - rr.left) / S + w / 2, cy:u ? +e.dataset.cy : (r.top - rr.top) / SY + h / 2, area:w * h,
                    text:!!(e.textContent || '').trim(), img:!!e.querySelector('img,[data-img]')});
       });
+      // phone-only spacing nudges (design px): keep titles / images / pills from touching on short screens
+      var nz = NUDGE[pg.dataset.n];
+      if (nz) info.forEach(function(b){ var dy = nz(b, b.e.dataset.nodeId || ''); if (dy) b.e.parentNode.style.setProperty('--ny', dy); });
       var main = [], hdr = [], stars = [], arrow = null;
       var bigs = info.filter(function(b){ return b.img && b.area > 20000; });
       function insideBig(o){ return bigs.some(function(b){ return b !== o && Math.abs(o.cx - b.cx) < b.w / 2 && Math.abs(o.cy - b.cy) < b.h / 2; }); }
