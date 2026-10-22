@@ -796,7 +796,7 @@
   var stage = document.getElementById('stage'), phone = document.getElementById('phone');
   var prevB = document.getElementById('prev'), nextB = document.getElementById('next'), toast = document.getElementById('toast');
   var pages = Array.prototype.slice.call(document.querySelectorAll('.page'));
-  var N = pages.length, cur = -1, busy = false, timers = [], S = 1;
+  var N = pages.length, cur = -1, busy = false, timers = [], S = 1, SY = 1;
   function el(tag, cls, parent){ var e = document.createElement(tag); if (cls) e.className = cls; if (parent) parent.appendChild(e); return e; }
   function addHot(parent, h){ var b = el('button', 'hot', parent); b.dataset.a = h.a; b.setAttribute('aria-label', h.a);
     b.style.cssText = 'left:' + h.x + 'px;top:' + h.y + 'px;width:' + h.w + 'px;height:' + h.h + 'px';
@@ -812,7 +812,7 @@
     stage.style.width = '390px'; stage.style.height = '844px'; stage.style.transform = 'none';
     stage.style.setProperty('--wl', '0px'); stage.style.setProperty('--wt', '0px');
     pages.forEach(function(p){ p.style.setProperty('--wl', '0px'); p.style.setProperty('--wt', '0px'); p.style.setProperty('--vd', 0); });
-    S = 1;
+    S = 1; SY = 1;
   }
   function fit(){
     if (document.body.classList.contains('sharemode')) return fitShare();
@@ -825,18 +825,21 @@
     var vd = 0;
     if (mobile){
       // fill the screen WIDTH (no inset); adapt the height by squeezing / stretching the gaps between elements
-      var U = 44, H0 = 800, MAXD = 40, MAXE = 150, wt0;
+      var U = 44, H0 = 800, MAXD = 60, MAXE = 150, wt0, sy = 1;
       s = vw / 390; Hd = vh / s; var d = H0 - Hd;
       if (document.body.classList.contains('sharemode')){ return fitShare(); }
-      if (d > MAXD){ s = vh / (H0 - MAXD); Hd = H0 - MAXD; d = MAXD; }   // very short screens: shrink a little instead
+      if (d > MAXD){   // short screens: keep the width filled, squash the height slightly (never leave side padding)
+        sy = Math.max(0.8, Hd / (H0 - MAXD)); if (Hd / (H0 - MAXD) < 0.8){ s = vh / ((H0 - MAXD) * 0.8); }
+        Hd = H0 - MAXD; d = MAXD;
+      }
       var extra = 0; if (-d > MAXE){ extra = -d - MAXE; d = -MAXE; }
       Wd = vw / s; vd = d; wt0 = -U + extra / 2;
       phone.style.width = vw + 'px'; phone.style.height = vh + 'px';
       window.__wt0 = wt0; window.__wl0 = (Wd - 390) / 2;
     }
     else { s = Math.min((vh - 70) / 844, 1.3); Wd = 390; Hd = 844; phone.style.width = (390 * s) + 'px'; phone.style.height = (844 * s) + 'px'; window.__wt0 = 0; window.__wl0 = 0; }
-    S = s;
-    stage.style.width = Wd + 'px'; stage.style.height = Hd + 'px'; stage.style.transform = 'scale(' + s + ')';
+    S = s; SY = mobile ? sy : 1;
+    stage.style.width = Wd + 'px'; stage.style.height = Hd + 'px'; stage.style.transform = 'scale(' + s + ',' + (s * SY) + ')';
     stage.style.setProperty('--wl', window.__wl0 + 'px'); stage.style.setProperty('--wt', window.__wt0 + 'px');
     pages.forEach(function(p){ p.style.setProperty('--wl', window.__wl0 + 'px'); p.style.setProperty('--wt', window.__wt0 + 'px'); p.style.setProperty('--vd', vd); });
   }
@@ -848,8 +851,8 @@
       var vd0 = pg.style.getPropertyValue('--vd'); pg.style.setProperty('--vd', 0);
       var rr = pg.firstChild.getBoundingClientRect(), info = [];
       [].slice.call(pg.querySelectorAll('.fx')).forEach(function(e){
-        var r = e.getBoundingClientRect(), u = e.dataset.unit, w = u ? +e.dataset.w : r.width / S, h = u ? +e.dataset.h : r.height / S;
-        info.push({e:e, w:w, h:h, cx:u ? +e.dataset.cx : (r.left - rr.left) / S + w / 2, cy:u ? +e.dataset.cy : (r.top - rr.top) / S + h / 2, area:w * h,
+        var r = e.getBoundingClientRect(), u = e.dataset.unit, w = u ? +e.dataset.w : r.width / S, h = u ? +e.dataset.h : r.height / SY;
+        info.push({e:e, w:w, h:h, cx:u ? +e.dataset.cx : (r.left - rr.left) / S + w / 2, cy:u ? +e.dataset.cy : (r.top - rr.top) / SY + h / 2, area:w * h,
                    text:!!(e.textContent || '').trim(), img:!!e.querySelector('img,[data-img]')});
       });
       var main = [], hdr = [], stars = [], arrow = null;
@@ -905,7 +908,7 @@
         });
       });
       // vertical spacing factor per wrapper (children are relative to their parent wrapper)
-      var cyOf = function(e){ var u = e.dataset && e.dataset.unit; if (u) return +e.dataset.cy; var r = e.getBoundingClientRect(); return (r.top - rr.top) / S + r.height / S / 2; };
+      var cyOf = function(e){ var u = e.dataset && e.dataset.unit; if (u) return +e.dataset.cy; var r = e.getBoundingClientRect(); return (r.top - rr.top) / SY + r.height / SY / 2; };
       [].forEach.call(pg.querySelectorAll('.vs'), function(w){
         var e = w.firstElementChild, f = Math.max(0, Math.min(1, (cyOf(e) - 120) / 670)), pw = w.parentElement.closest('.vs'), pf = pw ? +pw.dataset.f : 0;
         w.dataset.f = f; w.style.setProperty('--vf', (f - pf).toFixed(4));
