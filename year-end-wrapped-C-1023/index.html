@@ -403,6 +403,12 @@
     pages.forEach(function(p){ p.style.setProperty('--wl', '100px'); p.style.setProperty('--wt', '0px'); p.style.setProperty('--vd', 0); });
     S = 1; SY = 1;
   }
+  function ctaVf(){   // CTA groups never end closer than 24 design px to the bottom edge
+    var vd = window.__vd || 0;
+    pages.forEach(function(p){ [].forEach.call(p.querySelectorAll('.vs[data-cta]'), function(w){
+      var fc = +w.dataset.fc, bot = +w.dataset.bot, need = vd > 0 ? (vd - (844 - bot - 24)) / vd : 0;
+      w.style.setProperty('--vf', Math.max(fc, need).toFixed(4)); }); });
+  }
   function plateVf(){ var cp = pages[0] && pages[0].querySelector('.bgplate'); if (cp && cp.parentNode) cp.parentNode.style.setProperty('--vf', (window.__vd > 0) ? (pages[0]._plateF != null ? pages[0]._plateF : .6) : 0); }
   function fit(){
     if (document.body.classList.contains('bakemode')) return fitBake();
@@ -426,11 +432,12 @@
       window.__wt0 = wt0; window.__wl0 = (Wd - 390) / 2;
     }
     else { s = Math.min((vh - 70) / 844, 1.3); Wd = 390; Hd = 844; phone.style.width = (390 * s) + 'px'; phone.style.height = (844 * s) + 'px'; window.__wt0 = 0; window.__wl0 = 0; }
-    S = s; SY = 1;
+    S = s; SY = s;
     stage.style.width = Wd + 'px'; stage.style.height = Hd + 'px'; stage.style.transform = 'scale(' + s + ')';
     stage.style.setProperty('--wl', window.__wl0 + 'px'); stage.style.setProperty('--wt', window.__wt0 + 'px');
     pages.forEach(function(p){ p.style.setProperty('--wl', window.__wl0 + 'px'); p.style.setProperty('--wt', window.__wt0 + 'px'); p.style.setProperty('--vd', vd); });
     window.__vd = vd; plateVf();
+    ctaVf();
   }
 
   // every leaf element floats in on its own: measure it, then pick direction / distance / delay from what it is
@@ -446,8 +453,13 @@
       });
       info.forEach(function(o){ var tx = (o.e.textContent || '').trim(); if (/^(Share|Let.s relive it)$/.test(tx)) o.e.classList.add('cta'); });
       if (pg.dataset.n === '4') info.forEach(function(b){ if (/^(Busiest day|Jan)/.test((b.e.textContent || '').trim())) b.e.parentNode.style.setProperty('--ny', 14); });
-      { var yh = 120; info.forEach(function(o){ if (o.e.classList.contains('hl') || o.e.classList.contains('pill')) yh = Math.max(yh, o.cy + o.h / 2); });
+      { var yh = 120; info.forEach(function(o){ if ((o.e.classList.contains('hl') || o.e.classList.contains('pill')) && o.cy < 340) yh = Math.max(yh, o.cy + o.h / 2); });
         info.forEach(function(o){ if ((o.e.classList.contains('hl') || o.e.classList.contains('pill')) && o.cy >= 125 && o.cy <= yh) o.e.parentNode.style.setProperty('--ny', -16); }); }   // phone: the title block tucks up under the header
+      info.forEach(function(o){
+        var n = pg.dataset.n, t = (o.e.textContent || '').trim();
+        if ((n === '2' || n === '3') && o.e.classList.contains('late')) o.e.parentNode.style.setProperty('--ny', -14);   // Top ribbon a little further from the big number
+        if (n === '9' && /^Ready to meet/.test(t)) o.e.parentNode.style.setProperty('--ny', 16);   // title a little further from the small line above
+      });
       var main = [], hdr = [], stars = [], arrow = null;
       var bigs = info.filter(function(b){ return b.img && b.area > 20000; });
       function insideBig(o){ return bigs.some(function(b){ return b !== o && Math.abs(o.cx - b.cx) < b.w / 2 && Math.abs(o.cy - b.cy) < b.h / 2; }); }
@@ -528,7 +540,7 @@
       var cyOf = function(e){ var u = e.dataset && e.dataset.unit; if (u) return +e.dataset.cy; var r = e.getBoundingClientRect(); return (r.top - rr.top) / SY + r.height / SY / 2; };
       var y0 = 120; info.forEach(function(o){ if ((o.e.classList.contains('hl') || o.e.classList.contains('pill')) && o.cy < 340) y0 = Math.max(y0, o.cy + o.h / 2); }); y0 = Math.min(y0, 340);   // nothing at or above the headline moves
       var fOf = function(e){ return Math.max(0, Math.min(1, (cyOf(e) - y0) / (790 - y0))); };
-      var ctaEl = pg.querySelector('.fx.cta') || [].slice.call(pg.querySelectorAll('.fx')).filter(function(e){ return /^Share$/.test((e.textContent || '').trim()) && !e.querySelector('.fx'); })[0];
+      var ctaEl = pg.querySelector('.fx.cta') || pg.querySelector('.fx.updown') || [].slice.call(pg.querySelectorAll('.fx')).filter(function(e){ return /^Share$/.test((e.textContent || '').trim()) && !e.querySelector('.fx'); })[0];
       var ctaF = null;
       if (ctaEl){   // the button keeps (at least) its design gap to the content above it: it moves exactly as much as the lowest element above it
         var ct = ctaEl.getBoundingClientRect().top;
@@ -548,11 +560,15 @@
         grp.forEach(function(g){ var av = g.reduce(function(m, o){ return m + fOf(o.e); }, 0) / g.length; g.forEach(function(o, k){ fGroup.set(o.e, Math.max(0, Math.min(1, av + (g.length - 1 - 2 * k) * .04))); }); });
       })();
       if (pg.dataset.n === '1'){ var sub = info.filter(function(o){ return /^A whole year/.test((o.e.textContent || '').trim()); })[0]; if (sub) pg._plateF = .5; }
-      var fCta = ctaEl ? (ctaF !== null ? Math.min(fOf(ctaEl), ctaF) : fOf(ctaEl)) : null;
       var repEl = [].slice.call(pg.querySelectorAll('.fx')).filter(function(e){ return /^Replay$/.test((e.textContent || '').trim()) && !e.querySelector('.fx'); })[0];
+      var ctaBot = 0; info.forEach(function(o){ if (ctaEl && (o.e === ctaEl || ctaEl.contains(o.e) || o.e === repEl)) ctaBot = Math.max(ctaBot, o.cy + o.h / 2); });
+      var KF = .62;   // content takes only part of the squeeze; the CTA sits lower (the free strip under it is given back to the artwork)
+      var fCta = ctaEl ? (ctaF !== null ? Math.min(fOf(ctaEl), ctaF) : fOf(ctaEl)) * .45 : null;
+      var phE = pg.querySelector('.fx.phone8'), fPhone = phE ? fOf(phE) * KF : 0;
       [].forEach.call(pg.querySelectorAll('.vs'), function(w){
-        var e = w.firstElementChild, f = e.classList.contains('blob') ? 0 : (ctaEl && (e === ctaEl || ctaEl.contains(e) || e === repEl)) ? fCta : (fGroup.has(e) ? fGroup.get(e) : fOf(e)), pw = w.parentElement.closest('.vs'), pf = pw ? +pw.dataset.f : 0;
+        var e = w.firstElementChild, f = e.classList.contains('blob') ? (e.classList.contains('live') ? fPhone : 0) : (ctaEl && (e === ctaEl || ctaEl.contains(e) || e === repEl)) ? fCta : (fGroup.has(e) ? fGroup.get(e) : fOf(e)) * KF, pw = w.parentElement.closest('.vs'), pf = pw ? +pw.dataset.f : 0;
         w.dataset.f = f; w.style.setProperty('--vf', (f - pf).toFixed(4));
+        if (ctaEl && (e === ctaEl || ctaEl.contains(e) || e === repEl)){ w.dataset.cta = 1; w.dataset.fc = f; w.dataset.bot = ctaBot; }
       });
       // how much vertical squeeze can this page take before objects start to touch each other (design px)? computed purely from the design boxes
       (function(){
@@ -576,7 +592,7 @@
       pg.style.setProperty('--vd', vd0 || 0);
       pg.style.display = ''; pg.style.visibility = '';
     });
-    plateVf();
+    plateVf(); ctaVf();
     var dm = 120; pages.forEach(function(pg){ if (pg._allow != null) dm = Math.min(dm, pg._allow); });
     window.__allow = pages.map(function(pg){ return pg._allow + ' ' + (pg._why || ''); });
     dm = Math.max(dm, 70);   // never shrink the artwork more than this; below that the layout has no real room left
