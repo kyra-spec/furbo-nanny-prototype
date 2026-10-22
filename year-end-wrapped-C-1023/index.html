@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>C_Year end wrapped_1023</title>
-<link rel="stylesheet" href="style.css?v=718521ad">
+<link rel="stylesheet" href="style.css?v=3ca2ebd4">
 </head>
 <body>
 <div class="app">
@@ -1953,7 +1953,7 @@
       function insideBig(o){ return bigs.some(function(b){ return b !== o && Math.abs(o.cx - b.cx) < b.w / 2 && Math.abs(o.cy - b.cy) < b.h / 2; }); }
       info.forEach(function(o){
         if (o.e.classList.contains('hdr')) hdr.push(o);
-        else if (o.e.querySelector('.spark') || o.e.classList.contains('swingonly') || (!o.e.classList.contains('nosway') && !insideBig(o) && (o.e.classList.contains('starfx') || (!o.text && o.w < 46 && o.h < 46 && o.img && o.area < 1800)))) stars.push(o);
+        else if ((o.e.querySelector('.spark') && o.w < 80 && o.h < 80) || o.e.classList.contains('swingonly') || (!o.e.classList.contains('nosway') && !insideBig(o) && (o.e.classList.contains('starfx') || (!o.text && o.w < 46 && o.h < 46 && o.img && o.area < 1800)))) stars.push(o);
         else if (Math.abs(o.w - 72) < 8 && Math.abs(o.h - 72) < 8 && o.cy > 640) arrow = o;
         else main.push(o);
       });
@@ -1986,6 +1986,14 @@
         g.sort(function(a, b){ return b.area - a.area; });
         g.slice(1).forEach(function(o){ ['--dx', '--dy', '--s', '--d', '--t', '--bobd'].forEach(function(v){ o.e.style.setProperty(v, g[0].e.style.getPropertyValue(v)); });
           ['bob', 'pop', 'nsway', 'cardsway', 'shake'].forEach(function(c){ if (g[0].e.classList.contains(c)) o.e.classList.add(c); }); });
+      });
+      info.forEach(function(o){   // per-page object rules
+        var n = pg.dataset.n, big = o.e.dataset.unit && o.w > 300;
+        if (n === '5' && big){ set(o, 0, 26, 1, 120, 750); o.e.classList.remove('pop', 'bob'); }
+        if ((n === '2' || n === '3') && o.img && !o.text && o.area > 40000 && !o.e.classList.contains('late')){
+          o.e.classList.remove('bob');
+          if (n === '3') set(o, 0, 0, .45, 120, 800);
+        }
       });
       info.forEach(function(o){   // CTA buttons: no scaling, they all just rise in the same way
         if (o.e.classList.contains('cta')){ set(o, 0, 34, 1, 200, 520); o.e.classList.remove('pop'); }
