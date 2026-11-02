@@ -1,7 +1,7 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="66" height="10" viewBox="0 0 66 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-<ellipse id="Ellipse 190" opacity="0.3" cx="33" cy="5" rx="33" ry="5" fill="url(#paint0_radial_0_19)"/>
+<ellipse id="Ellipse 190" opacity="0.3" cx="33" cy="5" rx="33" ry="5" fill="url(#paint0_radial_0_66)"/>
 <defs>
-<radialGradient id="paint0_radial_0_19" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(33 5) scale(33 5)">
+<radialGradient id="paint0_radial_0_66" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(33 5) scale(33 5)">
 <stop stop-color="#B58971"/>
 <stop offset="1" stop-color="#B58971" stop-opacity="0"/>
 </radialGradient>
