@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Year end wrap 2026</title>
-<link rel="stylesheet" href="style.css?v=1725c3e0">
+<link rel="stylesheet" href="style.css?v=26cc208b">
 </head>
 <body>
 <div class="app">
@@ -745,7 +745,7 @@
         if (tag && ttl && tag !== ttl){ starRef.set(ttl, tag); var tvs = ttl.closest('.vs'), gvs = tag.closest('.vs'), nyv = tvs && tvs.style.getPropertyValue('--ny'); if (gvs && nyv) gvs.style.setProperty('--ny', nyv); }   // tag and title tuck up together
       })();
       if (pg.dataset.n === '10'){   // the title is two lines now: the whole check-ins artwork sits a little higher, the Top label a bit more
-        info.forEach(function(o){ if (o.cy > 280 && !o.e.classList.contains('cta') && !o.e.classList.contains('bgl') && o.e.closest('.vs')) o.e.closest('.vs').style.setProperty('--oy', o.e.classList.contains('late') ? -30 : (o.e.dataset.nodeId === '18746:31030' ? -2 : -18)); });
+        info.forEach(function(o){ if (o.cy > 280 && !o.e.classList.contains('cta') && !o.e.classList.contains('bgl') && o.e.closest('.vs')) o.e.closest('.vs').style.setProperty('--oy', o.e.classList.contains('late') ? -30 : (o.e.dataset.nodeId === '18746:31030' ? -2 : (o.e.dataset.nodeId === '18727:5355' ? -36 : -18))); });
       }
       if (pg.dataset.n === '9'){ var k1 = qn('18799:1655'), k2 = qn('18799:1706'); if (k1 && k2) starRef.set(k2, k1); }   // the two cards keep their overlap (11:00 PM stays readable)
       if (pg.dataset.n === '10'){ var nt = info.filter(function(o){ return /Nanny check-ins/.test(o.e.textContent || ''); })[0]; if (nt) ['18746:31045', '18746:31012'].forEach(function(id){ var de = qn(id); if (de && de !== nt.e) starRef.set(de, nt.e); }); }   // the chat bubbles follow the text, never sliding over it
