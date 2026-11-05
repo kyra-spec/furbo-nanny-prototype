@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Year end wrap 2026</title>
-<link rel="stylesheet" href="style.css?v=7ef26ac7">
+<link rel="stylesheet" href="style.css?v=21363d47">
 </head>
 <body>
 <div class="app">
@@ -757,6 +757,8 @@
       var y0 = 120; info.forEach(function(o){ if ((o.e.classList.contains('hl') || o.e.classList.contains('pill')) && o.cy < 340) y0 = Math.max(y0, o.cy + o.h / 2); }); y0 = Math.min(y0, 340);   // nothing at or above the headline moves
       var fOf = function(e){ return Math.max(0, Math.min(1, (cyOf(e) - y0) / (790 - y0))); };
       var ctaEl = pg.querySelector('.fx.cta') || pg.querySelector('.fx.updown') || [].slice.call(pg.querySelectorAll('.fx')).filter(function(e){ return /^Share$/.test((e.textContent || '').trim()) && !e.querySelector('.fx'); })[0];
+      info.forEach(function(u){ if (!u.e.querySelector('.odo') || !u.e.querySelector('.tstroke') || pg.dataset.n === '7') return;   // the "Avg." line under a number + caption moves with that block (same gap on every phone), instead of drifting up into the caption
+        info.forEach(function(o){ if (/^Avg\./.test((o.e.textContent || '').trim()) && o.cy > u.cy && o.cy - u.cy < 120) starRef.set(o.e, u.e); }); });
       var ctaF = null;
       if (ctaEl){   // the button keeps (at least) its design gap to the content above it: it moves exactly as much as the lowest element above it
         var ct = ctaEl.getBoundingClientRect().top;
