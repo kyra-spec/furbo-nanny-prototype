@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Year end wrap 2026</title>
-<link rel="stylesheet" href="style.css?v=21363d47">
+<link rel="stylesheet" href="style.css?v=7e00b4e2">
 </head>
 <body>
 <div class="app">
@@ -640,6 +640,7 @@
       var late = pg.querySelector('.fx.late'), lo = pg.querySelector('.odo');
       if (late && lo){ var nf = lo.closest('.fx'), nd = nf ? parseInt(nf.style.getPropertyValue('--d')) || 0 : 0;
         set({e:late}, 0, 0, .45, nd + 420 + 1130 + lo.querySelectorAll('.reel').length * 55 - 360, 650); late.classList.add('pop'); late.style.setProperty('--ld', (nd + 420 + 1130 + lo.querySelectorAll('.reel').length * 55 - 250) + 'ms'); }
+      if (late && pg.dataset.n === '7'){ set({e:late}, 0, 0, .45, 2950, 650); late.style.setProperty('--ld', '3060ms'); }   // Calm my pet: the Avg line comes first, the Top label pops after it
       var mq = pg.dataset.n === '7' && pg.querySelector('[data-node-id="18727:4953"]');
       if (mq){ // Calm my pet: the scenery cards sweep past like a marquee, then the number rolls in
         set({e:mq}, 0, 0, 1, 150, 300); mq.classList.remove('pop', 'bob'); mq.firstElementChild.classList.add('mq');
@@ -758,7 +759,10 @@
       var fOf = function(e){ return Math.max(0, Math.min(1, (cyOf(e) - y0) / (790 - y0))); };
       var ctaEl = pg.querySelector('.fx.cta') || pg.querySelector('.fx.updown') || [].slice.call(pg.querySelectorAll('.fx')).filter(function(e){ return /^Share$/.test((e.textContent || '').trim()) && !e.querySelector('.fx'); })[0];
       info.forEach(function(u){ if (!u.e.querySelector('.odo') || !u.e.querySelector('.tstroke') || pg.dataset.n === '7') return;   // the "Avg." line under a number + caption moves with that block (same gap on every phone), instead of drifting up into the caption
-        info.forEach(function(o){ if (/^Avg\./.test((o.e.textContent || '').trim()) && o.cy > u.cy && o.cy - u.cy < 120) starRef.set(o.e, u.e); }); });
+        info.forEach(function(o){ if (/^Avg\./.test((o.e.textContent || '').trim()) && o.cy > u.cy && o.cy - u.cy < 120){ starRef.set(o.e, u.e);
+          var ar = o.e.getBoundingClientRect();
+          [].forEach.call(pg.querySelectorAll('.fx'), function(g){ if (g === o.e || g === u.e || g.contains(o.e) || o.e.contains(g) || (g.textContent || '').trim() || !g.querySelector('img,svg')) return;
+            var gr = g.getBoundingClientRect(); if (gr.width > 90 * SY && Math.abs((gr.top + gr.bottom) / 2 - (ar.top + ar.bottom) / 2) < 34 * SY && Math.abs((gr.left + gr.right) / 2 - (ar.left + ar.right) / 2) < 90 * SY) starRef.set(g, u.e); }); } }); });   // + its grey brush stroke
       var ctaF = null;
       if (ctaEl){   // the button keeps (at least) its design gap to the content above it: it moves exactly as much as the lowest element above it
         var ct = ctaEl.getBoundingClientRect().top;
