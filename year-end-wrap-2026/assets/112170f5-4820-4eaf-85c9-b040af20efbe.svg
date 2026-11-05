@@ -1,0 +1,17 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="271.359" height="43.478" viewBox="0 0 271.359 43.478" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="Rectangle 185807">
+<use xlink:href="#stroke0_0_160" fill="url(#paint0_linear_0_160)"/>
+<mask id="stroke1_0_160" fill="white">
+<use xlink:href="#stroke0_0_160"/>
+</mask>
+<path d="M11.8355 39.9304L259.18 43.4768C267.096 43.5903 272.951 36.1416 270.971 28.4762L267.979 16.8979C266.647 11.7428 262.078 8.08168 256.756 7.9062L17.1896 0.00657998C11.7484 -0.172843 6.86818 3.33323 5.30167 8.54717L0.515075 24.4788C-1.77784 32.1105 3.86764 39.8162 11.8355 39.9304Z" stroke-width="2" stroke="white" mask="url(#stroke1_0_160)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_160" x1="274.907" y1="-6.29774" x2="233.678" y2="114.905" gradientUnits="userSpaceOnUse">
+<stop stop-color="#E0B161"/>
+<stop offset="0.582564" stop-color="#FFECC5"/>
+<stop offset="1" stop-color="#E0B161"/>
+</linearGradient>
+<path id="stroke0_0_160" d="M5.30167 8.54717C6.86818 3.33323 11.7484 -0.172843 17.1896 0.00658L256.756 7.9062C262.078 8.08168 266.647 11.7428 267.979 16.8979L270.971 28.4762C272.951 36.1416 267.096 43.5903 259.18 43.4768L11.8355 39.9304C3.86764 39.8162 -1.77784 32.1105 0.515075 24.4788L5.30167 8.54717Z"/>
+</defs>
+</svg>
