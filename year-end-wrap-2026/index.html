@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Year end wrap 2026</title>
-<link rel="stylesheet" href="style.css?v=7e00b4e2">
+<link rel="stylesheet" href="style.css?v=0cc80793">
 </head>
 <body>
 <div class="app">
@@ -539,6 +539,13 @@
       var fc = +w.dataset.fc, bot = +w.dataset.bot, need = vd > 0 ? (vd - (844 - bot - (+w.dataset.m || 24))) / vd : 0;
       var vfv = Math.max(fc, need).toFixed(4); w.style.setProperty('--vf', vfv);
       [].forEach.call(p.querySelectorAll('.vs[data-follow]'), function(x){ x.style.setProperty('--vf', vfv); }); }); });   // (the Avg label keeps its gap to Share)
+    var mob = document.body.classList.contains('mobile');
+    pages.forEach(function(p){ var cw = p.querySelector('.vs[data-cta]');   // phones: the Avg label (+ its brush) sits midway between the caption and the Share button
+      [].forEach.call(p.querySelectorAll('.vs[data-mid]'), function(w){
+        if (!mob){ w.style.setProperty('--oy', -18); return; }
+        var sc = (+w.dataset.f || 0) * vd, st = cw ? (+cw.style.getPropertyValue('--vf') || 0) * vd : 0;
+        var oy = ((+w.dataset.yc) + (+w.dataset.yt)) / 2 - (+w.dataset.ya) + (sc - st) / 2;
+        w.style.setProperty('--oy', Math.max(-70, Math.min(40, oy)).toFixed(1)); }); });
   }
   function plateVf(){ var cp = pages[0] && pages[0].querySelector('.bgplate'); if (cp && cp.parentNode) cp.parentNode.style.setProperty('--vf', (window.__vd > 0) ? (pages[0]._plateF != null ? pages[0]._plateF : .6) : 0); }
   function fit(){
@@ -760,9 +767,11 @@
       var ctaEl = pg.querySelector('.fx.cta') || pg.querySelector('.fx.updown') || [].slice.call(pg.querySelectorAll('.fx')).filter(function(e){ return /^Share$/.test((e.textContent || '').trim()) && !e.querySelector('.fx'); })[0];
       info.forEach(function(u){ if (!u.e.querySelector('.odo') || !u.e.querySelector('.tstroke') || pg.dataset.n === '7') return;   // the "Avg." line under a number + caption moves with that block (same gap on every phone), instead of drifting up into the caption
         info.forEach(function(o){ if (/^Avg\./.test((o.e.textContent || '').trim()) && o.cy > u.cy && o.cy - u.cy < 120){ starRef.set(o.e, u.e);
+          var cinf = ctaEl && info.filter(function(q){ return q.e === ctaEl; })[0];
+          if (cinf){ pg._mid = { els: [o.e], ya: o.cy, yc: u.cy + u.h / 2 - 19, yt: cinf.cy - cinf.h / 2 }; }
           var ar = o.e.getBoundingClientRect();
           [].forEach.call(pg.querySelectorAll('.fx'), function(g){ if (g === o.e || g === u.e || g.contains(o.e) || o.e.contains(g) || (g.textContent || '').trim() || !g.querySelector('img,svg')) return;
-            var gr = g.getBoundingClientRect(); if (gr.width > 90 * SY && Math.abs((gr.top + gr.bottom) / 2 - (ar.top + ar.bottom) / 2) < 34 * SY && Math.abs((gr.left + gr.right) / 2 - (ar.left + ar.right) / 2) < 90 * SY) starRef.set(g, u.e); }); } }); });   // + its grey brush stroke
+            var gr = g.getBoundingClientRect(); if (gr.width > 90 * SY && Math.abs((gr.top + gr.bottom) / 2 - (ar.top + ar.bottom) / 2) < 34 * SY && Math.abs((gr.left + gr.right) / 2 - (ar.left + ar.right) / 2) < 90 * SY){ starRef.set(g, u.e); if (pg._mid) pg._mid.els.push(g); } }); } }); });   // + its grey brush stroke
       var ctaF = null;
       if (ctaEl){   // the button keeps (at least) its design gap to the content above it: it moves exactly as much as the lowest element above it
         var ct = ctaEl.getBoundingClientRect().top;
@@ -795,6 +804,7 @@
         if (pg.dataset.n === '7' && (e.dataset.nodeId === '18727:5419' || e.dataset.nodeId === '18727:5420')) w.dataset.follow = 1;
         if (pg.dataset.n === '7' && (starRef.get(e) === qn('18727:4953') || e.dataset.nodeId === '18727:4953')) f *= .5;   // on phones the number block keeps away from the headline
         w.dataset.f = f; w.style.setProperty('--vf', (f - pf).toFixed(4));
+        if (pg._mid && pg._mid.els.indexOf(e) >= 0){ w.dataset.mid = 1; w.dataset.ya = pg._mid.ya; w.dataset.yc = pg._mid.yc; w.dataset.yt = pg._mid.yt; }
         if (ctaEl && (e === ctaEl || ctaEl.contains(e) || e === repEl)){ w.dataset.cta = 1; w.dataset.fc = f; w.dataset.bot = ctaBot; w.dataset.m = pg.dataset.n === '13' ? 8 : 24; }
       });
       var tgf = pg.querySelector('[data-node-id="18987:108856"]'), twv = tgf && tgf.closest('.vs'); var pw14 = pg.querySelector('.bgplate'); if (pw14 && pw14.parentNode && twv) pw14.parentNode.style.setProperty('--vf', twv.dataset.f);   // card layers are not wrapped (blend modes need the page as backdrop): they follow the text block's squeeze
